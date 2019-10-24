@@ -1,3 +1,4 @@
+import java.util.List;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,26 +17,27 @@ import java.time.format.DateTimeFormatter;
 //import java.util.List;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 
 public class Main {
 
 	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
-	private String envUserProfile;	
+	private String envUserProfile;
 	private String targetDir;
-	
+
 	private String[] subDirNames = { "Einkäufe", "Stromzähler" };
 
-	private String[] fileNames_Einkauefe = { ".gesamt = ", " - andere Käufe", " - Haushaltsartikel & Kosmetik",
-			" - Kleidung", " - Nahrungsmittel", " - Carsharing"};
+	private String[] fileNames_Einkaeufe = { ".gesamt = ", " - andere Käufe", " - Haushaltsartikel & Kosmetik",
+			" - Kleidung", " - Nahrungsmittel", " - Carsharing" };
 
 	private String[] fileNames_Stromzaehler = { " - Stromzähler = " };
 
 	private String curDate;
-	//private String prevDate;
-	
-	
-	//private final String REGEX_CALC_EUR = "[0-9]+,[0-9]{2}";
+
+	private List allFilePahts;
+
+	// private final String REGEX_CALC_EUR = "[0-9]+,[0-9]{2}";
 
 	// --------------------------------------------------//
 
@@ -43,36 +45,36 @@ public class Main {
 
 		Main main = new Main();
 		main.curDate = main.getCurrentDate();
-		//main.prevDate = main.getPreviousDate();
-		
+		// main.prevDate = main.getPreviousDate();
+
 		main.setEnvUserprofile();
 		main.setTargetDir();
-		
+
 		main.createDir();
 		main.createSubDir();
 		main.createFiles();
-		
-		//main.calculateExpanses();
-		
+
+		main.callMailReceiverJar();
+		// main.calculateExpanses();
 
 	}
 
 
 	private void setEnvUserprofile() {
+
 		this.envUserProfile = System.getProperty("user.home");
 	}
-	
+
 	private void setTargetDir() {
 		this.targetDir = envUserProfile + targetDirEnding + " " + splitDate()[1];
 	}
-	
-	
+
 	private String getCurrentMonth() {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM");
 		LocalDateTime now = LocalDateTime.now();
 		return dtf.format(now).toString();
 	}
-	
+
 	private String getCurrentYear() {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YYYY");
 		LocalDateTime now = LocalDateTime.now();
@@ -87,7 +89,7 @@ public class Main {
 	private String getCurrentDate() {
 		return this.getCurrentMonth() + "_" + this.getCurrentYear();
 	}
-	
+
 //	private String getPreviousDate() {
 //		String tempDate;
 //		String curMonth = this.getCurrentMonth();
@@ -103,11 +105,10 @@ public class Main {
 //			}
 //		}
 //	}
-	
+
 	private String[] splitDate() {
 		return curDate.split("_");
 	}
-
 
 	/**
 	 * creates root dir at specified location
@@ -116,11 +117,9 @@ public class Main {
 		new File(buildRootDirString()).mkdirs();
 	}
 
-	
 	private String buildRootDirString() {
 		return targetDir + "/" + this.curDate;
 	}
-
 
 	private void createSubDir() {
 		for (String s : subDirNames) {
@@ -138,7 +137,7 @@ public class Main {
 		});
 		return directories;
 	}
-	
+
 //	private String[] getPrevMonthDirNames() {
 //		File file = new File(buildPrevMonthFilesDir());
 //		File[] filesList = file.listFiles();
@@ -157,7 +156,7 @@ public class Main {
 	 * 
 	 * @throws IOException
 	 */
-	private void createFiles() throws IOException  {
+	private void createFiles() throws IOException {
 		String[] dirNames = getDirNames();
 		for (String ds : dirNames) {
 			if (ds.contentEquals(subDirNames[0])) {
@@ -168,12 +167,12 @@ public class Main {
 			}
 		}
 	}
-	
-	private void createTargetFile(String pathNameForFile) throws IOException {		
-		String content = "";		
-		if(pathNameForFile == subDirNames[0]) {			
-			content = defaultContentOfFile();			
-			for (String fs : fileNames_Einkauefe) {
+
+	private void createTargetFile(String pathNameForFile) throws IOException {
+		String content = "";
+		if (pathNameForFile == subDirNames[0]) {
+			content = defaultContentOfFile();
+			for (String fs : fileNames_Einkaeufe) {
 				if (fs.startsWith(".")) {
 					writeToFile(fs, pathNameForFile, content);
 				} else {
@@ -181,8 +180,8 @@ public class Main {
 				}
 			}
 		}
-		if(pathNameForFile == subDirNames[1]) {			
-			content = defaultContentOfFile_Strom();			
+		if (pathNameForFile == subDirNames[1]) {
+			content = defaultContentOfFile_Strom();
 			for (String fs : fileNames_Stromzaehler) {
 				if (fs.startsWith(".")) {
 					writeToFile(curDate + " " + fs, pathNameForFile, content);
@@ -191,44 +190,95 @@ public class Main {
 				}
 			}
 		}
+		
+		setAllFilePahts(provideAllAbsolutFilePaths());
 	}
-	
+
+	public List getAllFilePahts() {
+		return allFilePahts;
+	}
+
+
+	public void setAllFilePahts(List allFilePahts) {
+		this.allFilePahts = allFilePahts;
+	}
+
+
 	private void writeToFile(String fileName, String pathNameForFile, String content) {
+
 		Writer writer = null;
 		try {
-		    writer = new BufferedWriter(new OutputStreamWriter(
-		    		new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/"+ fileName + ".txt"), "utf-8"));
-		    writer.write(content);
+			writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName + ".txt"),
+					"utf-8"));
+			writer.write(content);
 		} catch (IOException ex) {
 		} finally {
 			try {
 				writer.close();
-			} catch (Exception ex) {/*ignore*/}	
+			} catch (Exception ex) {
+				/* ignore */}
 		}
 	}
-	
+
 	private String defaultContentOfFile() {
 		String fileContent = convertIntToMonth(splitDate()[0]) + " " + splitDate()[1] + System.lineSeparator();
 		fileContent += "-------------------------------" + System.lineSeparator();
 		fileContent += "					  " + System.lineSeparator();
-		fileContent += "===============================";		
+		fileContent += "===============================";
 		return fileContent;
 	}
-	
+
 	private String defaultContentOfFile_Strom() {
 		String fileContent = convertIntToMonth(splitDate()[0]) + " " + splitDate()[1] + System.lineSeparator();
 		fileContent += "Beginn des Monats:" + System.lineSeparator();
 		fileContent += "Ende des Monats:" + System.lineSeparator();
 		fileContent += "Verbrauch: kwh";
-	
+
 		return fileContent;
 	}
-	
+
 	private String convertIntToMonth(String numberOfMonth) {
 		DateFormatSymbols dfs = new DateFormatSymbols();
-	    String[] months = dfs.getMonths();	    
-	    String convertedMonth = months[Integer.parseInt(numberOfMonth)-1];	    
+		String[] months = dfs.getMonths();
+		String convertedMonth = months[Integer.parseInt(numberOfMonth) - 1];
 		return convertedMonth;
+	}
+
+	private ArrayList<String> provideAllAbsolutFilePaths() {
+		String[] fileNames = fileNames_Einkaeufe;
+		ArrayList<String> allFilePaths = new ArrayList<String>();
+
+		for (int i = 0; i < fileNames.length; i++) {
+			allFilePaths.add(targetDir + "\\" + subDirNames[0] + "\\" + curDate + " " + fileNames[i]);
+		}
+		return allFilePaths;
+	}
+	
+	
+	
+	private void callMailReceiverJar() {
+		try {
+			Process proc = Runtime.getRuntime()
+					.exec("java -jar D:\\Private\\AnnisDenka_Management\\MailReceiver\\target\\MailReceiver.jar "
+							+ provideAbsolutFilePaths_Carsharing());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String provideAbsolutFilePaths_Carsharing() {
+		List allFilePaths = getAllFilePaths();
+		for (int i = 0; i < allFilePaths.size(); i++) {
+			if (((String) allFilePaths.get(i)).matches("Carsharing")) {
+				return targetDir + "\\" + subDirNames[0] + "\\" + curDate + " " + allFilePaths.get(i);
+			}
+		}
+		return "";
+	}
+
+	private List getAllFilePaths() {
+		return allFilePahts;
 	}
 
 //	private void calculateExpanses() throws IOException, URISyntaxException {
@@ -259,7 +309,7 @@ public class Main {
 //		//System.out.println("Total: " + sumTotal);
 //		this.addExpansesToFileNames(sumOfFile, sumTotal, fileList);
 //	}
-	
+
 //	private float calcTotalExpanses(float[] sumOfFile) {
 //		int tempSum = 0;
 //		for(Float f :  sumOfFile) {
@@ -289,7 +339,7 @@ public class Main {
 //			value = "";
 //		}
 //	}
-	
+
 //	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
 //		String data = ""; 
 //		File f = new File(this.targetDir + "\\" + getPreviousDate() +  "\\" + subDirNames[0] + "\\" + fileName);		
@@ -298,7 +348,7 @@ public class Main {
 //	    
 //		return extractedExpanses;
 //	}
-	
+
 //	private List<String> getRegExMatches(String data) {
 //		List<String> regexMatches = new ArrayList<String>();
 //		Pattern pattern = Pattern.compile(REGEX_CALC_EUR);
