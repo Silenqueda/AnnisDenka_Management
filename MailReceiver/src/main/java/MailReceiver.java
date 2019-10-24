@@ -35,7 +35,7 @@ public class MailReceiver {
 			emailStore.connect("imap.gmx.net", userName, password); // ### MessagingExecption
 			
 			Folder emailFolder = emailStore.getFolder("Inbox");
-			Folder[] emailFolderList = emailStore.getDefaultFolder().list("INBOX/*");
+			Folder[] emailFolderList = emailStore.getDefaultFolder().list("INBOX/Carsharing");
 			
 			Message[] messages;
 			
@@ -76,7 +76,7 @@ public class MailReceiver {
 				}
 				return messageContent.toString();
 			}
-			return content.toString();
+			//return content.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
@@ -104,10 +104,10 @@ public class MailReceiver {
 		calender.setTime(date);
 		
 		int day = calender.get(Calendar.DAY_OF_MONTH);
-		int month = calender.get(Calendar.DAY_OF_MONTH);
+		int month = calender.get(Calendar.MONTH);
 		int year = calender.get(Calendar.YEAR);
 		
-		return day + "." + month + "." + year;
+		return day + "." + (month+1) + "." + year;
 	}
 	
 	
