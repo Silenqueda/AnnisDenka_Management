@@ -112,7 +112,9 @@ public class MailReceiver {
 	
 	
 	public static void main(String[] args) {
-		receiveMails("d.b.htw@gmx.de", "dennis22.");
+		System.out.println(args.length);
+		System.out.println(args[0]);
+		//receiveMails("d.b.htw@gmx.de", "dennis22.");
 	}
 
 }
