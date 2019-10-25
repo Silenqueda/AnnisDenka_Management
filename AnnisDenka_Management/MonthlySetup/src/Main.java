@@ -41,7 +41,7 @@ public class Main {
 
 	// --------------------------------------------------//
 
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
 		Main main = new Main();
 		main.curDate = main.getCurrentDate();
@@ -257,11 +257,20 @@ public class Main {
 	
 	
 	
-	private void callMailReceiverJar() {
+	private void callMailReceiverJar() throws InterruptedException {
+		String temp = provideAbsolutFilePaths_Carsharing();
+		
+		String jar = "java -jar ";
+		String workspace = System.getProperty("user.dir") + "\\";
+		String mailReceiver = "MailReceiver.jar";
+		String jarPath = jar+workspace+mailReceiver;
+		
+		
 		try {
 			Process proc = Runtime.getRuntime()
-					.exec("java -jar D:\\Private\\AnnisDenka_Management\\MailReceiver\\target\\MailReceiver.jar "
-							+ provideAbsolutFilePaths_Carsharing());
+					.exec(jarPath);
+			int status = proc.waitFor();
+			System.out.println("Proccess finished with: " + status);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
