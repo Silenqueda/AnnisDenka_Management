@@ -231,6 +231,11 @@ public class Main {
 
 	private String defaultContentOfFile_Strom() {
 		String fileContent = convertIntToMonth(splitDate()[0]) + " " + splitDate()[1] + System.lineSeparator();
+		fileContent += "##################################" + System.lineSeparator();
+		fileContent += "# Grundpreis: 8,20 €/Monat" + System.lineSeparator();
+		fileContent += "# Verbrauchspreis: 31,14 Cent/kWh" + System.lineSeparator();
+		fileContent += "##################################" + System.lineSeparator();
+		fileContent += System.lineSeparator();
 		fileContent += "Beginn des Monats:" + System.lineSeparator();
 		fileContent += "Ende des Monats:" + System.lineSeparator();
 		fileContent += "Verbrauch: kwh";

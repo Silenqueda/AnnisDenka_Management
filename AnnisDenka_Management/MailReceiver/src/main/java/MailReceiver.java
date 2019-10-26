@@ -12,6 +12,8 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 public class MailReceiver {
 
+	private String lastWrittenDate;
+
 	public static void receiveMails(String userName, String password) {
 
 		/**
@@ -37,13 +39,21 @@ public class MailReceiver {
 
 			Message[] messages;
 
+			String mailContent = "";
+
 			for (Folder f : emailFolderList) {
 				f.open(Folder.READ_ONLY);
 				messages = f.getMessages();
 				for (Message m : messages) {
-					System.out.println(getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT, REGEX_CARSHARING_CHARGE_DATE));
+					mailContent += getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT,
+							REGEX_CARSHARING_CHARGE_DATE);
+					mailContent += System.lineSeparator();
+					//System.out.println(mailContent);
 				}
 			}
+			
+			createFileForMailData(mailContent);
+			
 		} catch (NoSuchProviderException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
@@ -88,7 +98,8 @@ public class MailReceiver {
 		return "";
 	}
 
-	private static String filterMessageForAmount(String messageToFilter, String regexCarsharing_Amount, Message message) {
+	private static String filterMessageForAmount(String messageToFilter, String regexCarsharing_Amount,
+			Message message) {
 		String filteredMessage = "";
 
 		Pattern pattern_expanse = Pattern.compile(regexCarsharing_Amount);
@@ -100,7 +111,8 @@ public class MailReceiver {
 		return filteredMessage;
 	}
 
-	private static String filterMessageForChargeDate(String messageToFilter, String regexCarsharing_ChargeDate, Message message) {
+	private static String filterMessageForChargeDate(String messageToFilter, String regexCarsharing_ChargeDate,
+			Message message) {
 		String filteredMessage = "";
 
 		Pattern pattern_expanse = Pattern.compile(regexCarsharing_ChargeDate);
@@ -123,6 +135,50 @@ public class MailReceiver {
 		int year = calender.get(Calendar.YEAR);
 
 		return day + "." + (month + 1) + "." + year;
+	}
+
+	private static boolean createFile_LastWrittenDate() {
+		// TODO: Location!
+		return false;
+	}
+
+	private String getLastWrittenDateFromFile() {
+		if (lastWrittenDate == null) {
+			createFile_LastWrittenDate();
+			return "";
+		} else {
+			// TODO
+			return "TODO: LAST WRITTEN DATE!";
+		}
+	}
+
+	private static void createFileForMailData(String mailContent) {
+		String workspace = System.getProperty("user.dir") + "\\";
+		String subPath = "temp\\";
+		String fileName = "mailData";
+		String absoluteFilePath = workspace+subPath+fileName;
+		// C:\Users\Dennis\Tutorial\GIT\AnnisDenka_Management\MailReceiver\temp
+		System.out.println(absoluteFilePath);
+		// File file = new File();
+		// if file exists -> writetofile
+		writeToFile(absoluteFilePath, mailContent);
+		
+	}
+
+	private static void writeToFile(String pathNameForFile, String content) {
+		Writer writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(pathNameForFile),
+					"utf-8"));
+			writer.write(content);
+		} catch (IOException ex) {
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
+		}
 	}
 
 	public static void main(String[] args) {
