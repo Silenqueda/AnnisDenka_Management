@@ -48,12 +48,12 @@ public class MailReceiver {
 					mailContent += getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT,
 							REGEX_CARSHARING_CHARGE_DATE);
 					mailContent += System.lineSeparator();
-					//System.out.println(mailContent);
+					// System.out.println(mailContent);
 				}
 			}
-			
+
 			createFileForMailData(mailContent);
-			
+
 		} catch (NoSuchProviderException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
@@ -77,7 +77,8 @@ public class MailReceiver {
 				Multipart multipart = (Multipart) content;
 				for (int i = 0; i < multipart.getCount(); i++) {
 					Part part = multipart.getBodyPart(i);
-					if (part.isMimeType("text/plain")) {
+					if (part.isMimeType("text/plain") && filterMessageForChargeDate(part.getContent().toString(),
+							regexCarsharing_ChargeDate, message) != "") {
 						messageContent.append(getDateFromMessage(message));
 						messageContent.append("\t");
 						messageContent.append(filterMessageForChargeDate(part.getContent().toString(),
@@ -153,24 +154,18 @@ public class MailReceiver {
 	}
 
 	private static void createFileForMailData(String mailContent) {
-		String workspace = System.getProperty("user.dir") + "\\";
+		String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\";
 		String subPath = "temp\\";
 		String fileName = "mailData";
-		String absoluteFilePath = workspace+subPath+fileName;
-		// C:\Users\Dennis\Tutorial\GIT\AnnisDenka_Management\MailReceiver\temp
+		String absoluteFilePath = workspace + subPath + fileName;
 		System.out.println(absoluteFilePath);
-		// File file = new File();
-		// if file exists -> writetofile
 		writeToFile(absoluteFilePath, mailContent);
-		
 	}
 
 	private static void writeToFile(String pathNameForFile, String content) {
 		Writer writer = null;
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(pathNameForFile),
-					"utf-8"));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathNameForFile), "utf-8"));
 			writer.write(content);
 		} catch (IOException ex) {
 		} finally {

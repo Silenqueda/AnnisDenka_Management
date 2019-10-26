@@ -231,6 +231,7 @@ public class Main {
 
 	private String defaultContentOfFile_Strom() {
 		String fileContent = convertIntToMonth(splitDate()[0]) + " " + splitDate()[1] + System.lineSeparator();
+		fileContent += System.lineSeparator();
 		fileContent += "##################################" + System.lineSeparator();
 		fileContent += "# Grundpreis: 8,20 €/Monat" + System.lineSeparator();
 		fileContent += "# Verbrauchspreis: 31,14 Cent/kWh" + System.lineSeparator();
@@ -239,6 +240,8 @@ public class Main {
 		fileContent += "Beginn des Monats:" + System.lineSeparator();
 		fileContent += "Ende des Monats:" + System.lineSeparator();
 		fileContent += "Verbrauch: kwh";
+		fileContent += System.lineSeparator();
+		fileContent += "Verbrauch: Euro";
 
 		return fileContent;
 	}
@@ -260,27 +263,6 @@ public class Main {
 		return allFilePaths;
 	}
 	
-	
-	
-	private void callMailReceiverJar() throws InterruptedException {
-		String temp = provideAbsolutFilePaths_Carsharing();
-		
-		String jar = "java -jar ";
-		String workspace = System.getProperty("user.dir") + "\\";
-		String mailReceiver = "MailReceiver.jar";
-		String jarPath = jar+workspace+mailReceiver;
-		
-		
-		try {
-			Process proc = Runtime.getRuntime()
-					.exec(jarPath);
-			int status = proc.waitFor();
-			System.out.println("Proccess finished with: " + status);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private String provideAbsolutFilePaths_Carsharing() {
 		List allFilePaths = getAllFilePaths();
 		for (int i = 0; i < allFilePaths.size(); i++) {
@@ -289,6 +271,23 @@ public class Main {
 			}
 		}
 		return "";
+	}
+	
+	private void callMailReceiverJar() throws InterruptedException {
+		//String temp = provideAbsolutFilePaths_Carsharing();
+		String jar = "java -jar ";
+		String workspace = System.getProperty("user.dir") + "\\";
+		String mailReceiver = "MailReceiver.jar";
+		String jarPath = jar+workspace+mailReceiver;
+		try {
+			Process proc = Runtime.getRuntime()
+					.exec(jarPath);
+			int status = proc.waitFor();
+			System.out.println("Proccess finished with: " + status);
+		} catch (IOException e) {
+			System.out.println("Process failed");
+			e.printStackTrace();
+		}
 	}
 
 	private List getAllFilePaths() {
