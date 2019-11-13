@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 //import java.util.regex.Pattern;
 import java.util.ArrayList;
 
-
 public class Main {
 
 	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
@@ -32,13 +31,13 @@ public class Main {
 
 	private String[] subDirNames = { "Einkäufe", "Stromzähler" };
 
-	private String[] fileNames_Einkaeufe = { ".gesamt = ", " - andere Käufe", " - Haushaltsartikel & Kosmetik",
-			" - Kleidung", " - Nahrungsmittel", " - Carsharing" };
+	private String[] fileNames_Einkaeufe = { ".gesamt = .txt", " - andere Käufe.txt",
+			" - Haushaltsartikel & Kosmetik.txt", " - Kleidung.txt", " - Nahrungsmittel.txt", " - Carsharing.txt" };
 
-	private String[] fileNames_Stromzaehler = { " - Stromzähler = " };
+	private String[] fileNames_Stromzaehler = { " - Stromzähler = .txt" };
 
 	private String curDate;
-	
+
 	private String prevDate;
 
 	private List allFilePahts;
@@ -51,9 +50,7 @@ public class Main {
 
 		Main main = new Main();
 		main.curDate = main.getCurrentDate();
-		System.out.println(main.curDate);
 		main.prevDate = main.getPreviousDate();
-		System.out.println(main.prevDate);
 
 		main.setEnvUserprofile();
 		main.setTargetDir();
@@ -62,11 +59,10 @@ public class Main {
 		main.createSubDir();
 		main.createFiles();
 
-		//main.callMailReceiverJar();
+		// main.callMailReceiverJar();
 		main.calculateExpanses();
 
 	}
-
 
 	private void setEnvUserprofile() {
 
@@ -102,14 +98,14 @@ public class Main {
 		String tempDate;
 		String curMonth = this.getCurrentMonth();
 		String curYear = this.getCurrentYear();
-		
-		if(curMonth.contentEquals("01")) {			
-			return tempDate = "12_" + (Integer.parseInt(curYear.toString()) -1);			
+
+		if (curMonth.contentEquals("01")) {
+			return tempDate = "12_" + (Integer.parseInt(curYear.toString()) - 1);
 		} else {
-			if((Integer.parseInt(curMonth) -1) < 10) {
-				return tempDate = "0" + (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
+			if ((Integer.parseInt(curMonth) - 1) < 10) {
+				return tempDate = "0" + (Integer.parseInt(curMonth) - 1) + "_" + Integer.parseInt(curYear.toString());
 			} else {
-				return tempDate = (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
+				return tempDate = (Integer.parseInt(curMonth) - 1) + "_" + Integer.parseInt(curYear.toString());
 			}
 		}
 	}
@@ -149,13 +145,13 @@ public class Main {
 	private String[] getPrevMonthDirNames() {
 		File file = new File(buildPrevMonthFilesDir());
 		File[] filesList = file.listFiles();
-		
+
 		String files[] = new String[filesList.length];
-		
-		for(int i = 0; i < filesList.length; i++) {
+
+		for (int i = 0; i < filesList.length; i++) {
 			files[i] = filesList[i].getName();
 		}
-		
+
 		return files;
 	}
 
@@ -198,8 +194,7 @@ public class Main {
 				}
 			}
 		}
-		
-		
+
 		setAllFilePahts(provideAllAbsolutFilePaths());
 	}
 
@@ -207,26 +202,28 @@ public class Main {
 		return allFilePahts;
 	}
 
-
 	public void setAllFilePahts(List allFilePahts) {
 		this.allFilePahts = allFilePahts;
 	}
 
-
 	private void writeToFile(String fileName, String pathNameForFile, String content) {
 
 		Writer writer = null;
-		try {
-			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName),
-					"utf-8"));
-			writer.write(content);
-		} catch (IOException ex) {
-		} finally {
+		File temp = new File(buildRootDirString() + "/" + pathNameForFile + "/" + fileName);
+		
+		if(!temp.exists()) { //TESTING!
 			try {
-				writer.close();
-			} catch (Exception ex) {
-				/* ignore */}
+				writer = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName),
+						"utf-8"));
+				writer.write(content);
+			} catch (IOException ex) {
+			} finally {
+				try {
+					writer.close();
+				} catch (Exception ex) {
+					/* ignore */}
+			}
 		}
 	}
 
@@ -271,7 +268,7 @@ public class Main {
 		}
 		return allFilePaths;
 	}
-	
+
 	private String provideAbsolutFilePaths_Carsharing() {
 		List allFilePaths = getAllFilePaths();
 		for (int i = 0; i < allFilePaths.size(); i++) {
@@ -281,16 +278,14 @@ public class Main {
 		}
 		return "";
 	}
-	
+
 	private void callMailReceiverJar() throws InterruptedException {
-		//String temp = provideAbsolutFilePaths_Carsharing();
 		String jar = "java -jar ";
 		String workspace = System.getProperty("user.dir") + "\\";
 		String mailReceiver = "MailReceiver.jar";
-		String jarPath = jar+workspace+mailReceiver;
+		String jarPath = jar + workspace + mailReceiver;
 		try {
-			Process proc = Runtime.getRuntime()
-					.exec(jarPath);
+			Process proc = Runtime.getRuntime().exec(jarPath);
 			int status = proc.waitFor();
 			System.out.println("Proccess finished with: " + status);
 		} catch (IOException e) {
@@ -309,17 +304,17 @@ public class Main {
 		float sum = 0;
 		float[] sumOfFile;
 		float sumTotal = 0;
-		
-		for(String s : fileList) {
-			 expansesList.add(readExpansesFromFile(s));			 
+
+		for (String s : fileList) {
+			expansesList.add(readExpansesFromFile(s));
 		}
-		
+
 		sumOfFile = new float[expansesList.size()];
 
 		List<Float> expansesOfType = new ArrayList<Float>();
-		
-		for(int i = 0; i < expansesList.size(); i++) {
-			for(int j = 0; j < expansesList.get(i).size(); j++) {
+
+		for (int i = 0; i < expansesList.size(); i++) {
+			for (int j = 0; j < expansesList.get(i).size(); j++) {
 				expansesOfType.add(Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", ".")));
 				sum += Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", "."));
 			}
@@ -332,7 +327,7 @@ public class Main {
 
 	private float calcTotalExpanses(float[] sumOfFile) {
 		int tempSum = 0;
-		for(Float f :  sumOfFile) {
+		for (Float f : sumOfFile) {
 			tempSum += f;
 		}
 		return tempSum;
@@ -342,30 +337,44 @@ public class Main {
 		String value = "";
 		File oldFile;
 		File newFile;
-		
-		for(int i = 0; i < filelist.length; i++) {
+
+		for (int i = 0; i < filelist.length; i++) {
 			oldFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i]);
-			
-			if(i == 0 && filelist[i].startsWith(".")) {
-				value += (total+"").replace(",", ".");
-				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€");
+
+			if (i == 0 && filelist[i].startsWith(".")) {
+				value += (total + "").replace(",", ".");
+				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
 				oldFile.renameTo(newFile);
 			} else {
-				value += (sums[i]+"");
-				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€");
-				oldFile.renameTo(newFile);
+				if (oldFile.getAbsoluteFile().toString().contains("€")) {
+					value += (sums[i] + "");
+					newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
+					File temp = new File(newFile.getAbsoluteFile().toString().replaceAll("[0-9]*.[0-9]*€.txt ", ""));
+					System.out.println("old:   " + oldFile);
+					System.out.println("new:   " + newFile);
+					System.out.println("temp:  " + temp);
+					oldFile.renameTo(temp);
+				} else {
+					value += (sums[i] + "");
+					newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
+					oldFile.renameTo(newFile);
+				}
 			}
 			value = "";
 		}
 	}
 
 	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
-		String data = ""; 
-		File f = new File(this.targetDir + "\\" + this.getPreviousDate() +  "\\" + subDirNames[0] + "\\" + fileName);		
-		System.out.println(f.getAbsolutePath());
-	    data = new String(Files.readAllBytes(Paths.get(f.toURI()))); 	    
-	    List<String> extractedExpanses = getRegExMatches(data);
-	    
+		String data = "";
+		if (this.getPreviousDate().contains("12_")) {
+			File f = new File(this.buildPrevMonthFilesDir() + "\\" + fileName);
+			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
+		} else {
+			File f = new File(this.targetDir + "\\" + this.getPreviousDate() + "\\" + subDirNames[0] + "\\" + fileName);
+			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
+		}
+		List<String> extractedExpanses = getRegExMatches(data);
+
 		return extractedExpanses;
 	}
 
@@ -374,22 +383,18 @@ public class Main {
 		Pattern pattern = Pattern.compile(REGEX_CALC_EUR);
 		Matcher matcher = pattern.matcher(data);
 		int hits = 0;
-		while (matcher.find())
-		{
-		    regexMatches.add(matcher.group(0));
-		    hits++;
+		while (matcher.find()) {
+			regexMatches.add(matcher.group(0));
+			hits++;
 		}
 		return regexMatches;
 	}
 
-	//TODO!!! Jahreswechsel funktioniert nicht richtig!
 	private String buildPrevMonthFilesDir() {
-		//System.out.println(targetDir + "/" + this.prevDate + "/" + this.subDirNames[0]);
-		if(prevDate.contains("12_")) {
-			System.out.println("if " + targetDir.substring(0, targetDir.length()-4) + prevDate.substring(prevDate.length() -4) + "/" + this.prevDate + "/" + this.subDirNames[0]);
-			return targetDir.substring(0, targetDir.length()-4) + prevDate.substring(prevDate.length() -4) + "/" + this.prevDate + "/" + this.subDirNames[0];
+		if (prevDate.contains("12_")) {
+			return targetDir.substring(0, targetDir.length() - 4) + prevDate.substring(prevDate.length() - 4) + "/"
+					+ this.prevDate + "/" + this.subDirNames[0];
 		} else {
-			System.out.println("else " + targetDir + "/" + this.prevDate + "/" + this.subDirNames[0]);
 			return targetDir + "/" + this.prevDate + "/" + this.subDirNames[0];
 		}
 	}
