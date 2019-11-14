@@ -10,11 +10,13 @@ import java.util.regex.Pattern;
 import javax.mail.*;
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
+import GUI.GUI_popup;
+
 public class MailReceiver {
 
 	private String lastWrittenDate;
 
-	public static void receiveMails(String userName, String password) {
+	public static void receiveMails(String userName, String password, GUI_popup getCredentials) {
 
 		/**
 		 * 0 = Datum am Tag der Fahrt 1 = Kosten der Fahrt
@@ -48,16 +50,16 @@ public class MailReceiver {
 					mailContent += getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT,
 							REGEX_CARSHARING_CHARGE_DATE);
 					mailContent += System.lineSeparator();
-					// System.out.println(mailContent);
+					 System.out.println(mailContent);
 				}
 			}
 
 			createFileForMailData(mailContent);
 
 		} catch (NoSuchProviderException e) {
-			e.printStackTrace();
+			getCredentials.dialogFailedLoginAttemp();
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			getCredentials.dialogFailedLoginAttemp();
 		}
 	}
 
@@ -154,11 +156,12 @@ public class MailReceiver {
 	}
 
 	private static void createFileForMailData(String mailContent) {
-		String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\";
+		//String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\"; NOT GLOBAL!
+		String workspace = System.getProperty("user.dir")+"//";
 		String subPath = "temp\\";
-		String fileName = "mailData";
+		String fileName = "mailData_all.txt";
 		String absoluteFilePath = workspace + subPath + fileName;
-		System.out.println(absoluteFilePath);
+		System.out.println("File created at " + absoluteFilePath);
 		writeToFile(absoluteFilePath, mailContent);
 	}
 
@@ -175,10 +178,19 @@ public class MailReceiver {
 				/* ignore */}
 		}
 	}
+	
+	private static void exitProgram() {
+		System.out.println("Program finished.");
+		System.exit(0);
+	}
 
 	public static void main(String[] args) {
-
-		receiveMails("d.b.htw@gmx.de", "dennis22.");
+		//get login credentials
+		GUI_popup getCredendtials = new GUI_popup();
+		//login to provided mail account
+		receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
+		//finishes program
+		exitProgram();
 	}
 
 }
