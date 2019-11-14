@@ -32,7 +32,7 @@ public class Main {
 	private String envUserProfile;
 	private String targetDir;
 
-	private String[] subDirNames = { "Einkäufe", "Stromzähler" };
+	private String[] subDirNames = { "Ausgaben", "Stromzähler" };
 
 	private String[] fileNames_Einkaeufe = { ".gesamt = .txt", " - andere Käufe.txt",
 			" - Haushaltsartikel & Kosmetik.txt", " - Kleidung.txt", " - Nahrungsmittel.txt", " - Carsharing.txt" };

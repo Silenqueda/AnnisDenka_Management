@@ -157,7 +157,7 @@ public class MailReceiver {
 
 	private static void createFileForMailData(String mailContent) {
 		//String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\"; NOT GLOBAL!
-		String workspace = System.getProperty("user.dir")+"\\";
+		String workspace = "..\\" + System.getProperty("user.dir")+"\\";
 		String subPath = "temp\\";
 		String fileName = "mailData_all.txt";
 		String absoluteFilePath = workspace + subPath + fileName;
