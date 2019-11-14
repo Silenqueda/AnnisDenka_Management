@@ -1,2 +1,5 @@
 /target/
 /temp/*
+# exclude everything
+# exception to the rule
+!temp/.gitkeep 
