@@ -190,6 +190,18 @@ public class MailReceiver {
 		}
 	}
 	
+	private void getDateToPay() {
+		
+	}
+	
+	private static void createSubFilesFromMailData_all() {
+		
+	}
+	
+	private static void writeToSubFiles() {
+		
+	}
+	
 	private static void exitProgram(GUI_popup getCredentials) {
 		getCredentials.dialogProgramFinished();
 	}
