@@ -12,6 +12,7 @@ These dates and values are filtered and written to a file in the predefined dire
 ### TODOs ###
 1) MonthlySetup - initial setup throws error if prevMonthSetup does not exist.
 2) MonthlySetup - calculatecarsharing expanses [depending on: MailReceiver 3)]
+3) MonthlySetup - fix renaming of ".gesamt = .txt"
 
 1) MailReceiver - write mailData_all to temp
 2) MailReceiver - filter mailData_all by dateToPay (second date)
