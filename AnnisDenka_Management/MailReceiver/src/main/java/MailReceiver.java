@@ -157,10 +157,21 @@ public class MailReceiver {
 
 	private static void createFileForMailData(String mailContent) {
 		//String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\"; NOT GLOBAL!
-		String workspace = "..\\" + System.getProperty("user.dir")+"\\";
-		String subPath = "temp\\";
+		String workspace_eclipse = System.getProperty("user.dir") + "\\";
+		String workspace_execJar = System.getProperty("user.dir") + "\\..\\";
+		
+		String subPath_eclipse = "temp\\";
+		String subPath_execJar = ".temp\\";
+		
 		String fileName = "mailData_all.txt";
-		String absoluteFilePath = workspace + subPath + fileName;
+		
+		String absoluteFilePath;
+		
+		if(new File("..\\" + subPath_execJar).exists()) {
+			absoluteFilePath = "..\\" + subPath_execJar + fileName;
+		} else {
+			absoluteFilePath = workspace_eclipse + subPath_eclipse + fileName;
+		}
 		System.out.println("File created at " + absoluteFilePath);
 		writeToFile(absoluteFilePath, mailContent);
 	}
