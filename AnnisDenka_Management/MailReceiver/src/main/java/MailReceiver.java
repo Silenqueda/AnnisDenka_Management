@@ -173,10 +173,10 @@ public class MailReceiver {
 			absoluteFilePath = workspace_eclipse + subPath_eclipse + fileName;
 		}
 		System.out.println("File created at " + absoluteFilePath);
-		writeToFile(absoluteFilePath, mailContent);
+		writeToFile_mailData_all(absoluteFilePath, mailContent);
 	}
 
-	private static void writeToFile(String pathNameForFile, String content) {
+	private static void writeToFile_mailData_all(String pathNameForFile, String content) {
 		Writer writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathNameForFile), "utf-8"));
