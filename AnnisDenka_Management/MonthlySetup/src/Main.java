@@ -62,8 +62,6 @@ public class Main {
 		main.createSubDir();
 		main.createFiles();
 
-		//main.calculateExpanses(); ###testing
-
 	}
 
 	private void setEnvUserprofile() {
@@ -121,7 +119,7 @@ public class Main {
 	private void createDir() {
 		new File(buildRootDirString()).mkdirs();
 		new File(buildRootDirExecutables()).mkdirs();
-		new File(buildRootDirTemp()).mkdirs();// ###testing
+		new File(buildRootDirTemp()).mkdirs();
 	}
 
 	private String buildRootDirString() {
@@ -162,7 +160,6 @@ public class Main {
 		for (int i = 0; i < filesList.length; i++) {
 			files[i] = filesList[i].getName();
 		}
-
 		return files;
 	}
 
@@ -222,7 +219,7 @@ public class Main {
 		Writer writer = null;
 		File temp = new File(buildRootDirString() + "/" + pathNameForFile + "/" + fileName);
 		
-		if(!temp.exists()) { //TESTING!
+		if(!temp.exists()) { 
 			try {
 				writer = new BufferedWriter(new OutputStreamWriter(
 						new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName),
@@ -288,21 +285,6 @@ public class Main {
 			}
 		}
 		return "";
-	}
-
-	private void callMailReceiverJar() throws InterruptedException {
-		String jar = "java -jar ";
-		String workspace = System.getProperty("user.dir") + "\\";
-		String mailReceiver = "MailReceiver.jar";
-		String jarPath = jar + workspace + mailReceiver;
-		try {
-			Process proc = Runtime.getRuntime().exec(jarPath);
-			int status = proc.waitFor();
-			System.out.println("Proccess finished with: " + status);
-		} catch (IOException e) {
-			System.out.println("Process failed");
-			e.printStackTrace();
-		}
 	}
 
 	private List getAllFilePaths() {
