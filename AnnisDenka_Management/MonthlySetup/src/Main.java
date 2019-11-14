@@ -26,8 +26,8 @@ import java.util.ArrayList;
 public class Main {
 
 	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
-	
 	private String targetDirJars = "\\Desktop\\Annis Denka\\Executable jars"; //### create folder which holds exec jars
+	private String targetDirTemp = "\\Desktop\\Annis Denka\\.temp";
 	
 	private String envUserProfile;
 	private String targetDir;
@@ -120,7 +120,8 @@ public class Main {
 	 */
 	private void createDir() {
 		new File(buildRootDirString()).mkdirs();
-		new File(buildRootDirExecutables()).mkdirs();//###testing
+		new File(buildRootDirExecutables()).mkdirs();
+		new File(buildRootDirTemp()).mkdirs();// ###testing
 	}
 
 	private String buildRootDirString() {
@@ -129,6 +130,10 @@ public class Main {
 	
 	private String buildRootDirExecutables() {
 		return envUserProfile + this.targetDirJars;
+	}
+	
+	private String buildRootDirTemp() {
+		return envUserProfile + this.targetDirTemp;
 	}
 
 	private void createSubDir() {
