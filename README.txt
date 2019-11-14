@@ -9,7 +9,7 @@ This project connects to my personal mail account, navigates to my carsharing ex
 These dates and values are filtered and written to a file in the predefined directory "carsharing - " depending on the dateToPay.
 
 
-### TODO's ###
+### TODOs ###
 1) MonthlySetup - initial setup throws error if prevMonthSetup does not exist.
 2) MonthlySetup - calculatecarsharing expanses [depending on: MailReceiver 3)]
 
@@ -17,3 +17,7 @@ These dates and values are filtered and written to a file in the predefined dire
 2) MailReceiver - filter mailData_all by dateToPay (second date)
 3) MailReceiver - write filtered datasets to their dedicated file 
    (dateToPay = 12.10.2019 -> 10.2019.txt)
+
+
+### DONEs ###
+4) MailReceiver - executable Jar points to "\.temp\", eclipse run points to "\temp\"
