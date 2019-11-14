@@ -157,7 +157,7 @@ public class MailReceiver {
 
 	private static void createFileForMailData(String mailContent) {
 		//String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\"; NOT GLOBAL!
-		String workspace = System.getProperty("user.dir")+"//";
+		String workspace = System.getProperty("user.dir")+"\\";
 		String subPath = "temp\\";
 		String fileName = "mailData_all.txt";
 		String absoluteFilePath = workspace + subPath + fileName;
@@ -179,18 +179,19 @@ public class MailReceiver {
 		}
 	}
 	
-	private static void exitProgram() {
-		System.out.println("Program finished.");
-		System.exit(0);
+	private static void exitProgram(GUI_popup getCredentials) {
+		getCredentials.dialogProgramFinished();
 	}
 
 	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.dir"));
+		
 		//get login credentials
-		GUI_popup getCredendtials = new GUI_popup();
+		//GUI_popup getCredendtials = new GUI_popup();
 		//login to provided mail account
-		receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
+		//receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
 		//finishes program
-		exitProgram();
+		//exitProgram(getCredendtials);
 	}
 
 }

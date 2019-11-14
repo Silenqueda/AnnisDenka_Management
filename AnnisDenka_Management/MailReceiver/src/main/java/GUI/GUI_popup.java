@@ -1,9 +1,7 @@
 package GUI;
 
-import java.awt.Window;
 import java.util.Arrays;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -39,10 +37,16 @@ public class GUI_popup {
 	
 	//Informs user if login attempt has failed
 	public void dialogFailedLoginAttemp() {
-		JDialog dialog_abort = new JDialog();
 		Object[] dialog_abort_message = {"Username and/or password wrong or empty"};
 		JOptionPane pane_dialog_abort = new JOptionPane(dialog_abort_message, JOptionPane.OK_OPTION);
 		pane_dialog_abort.createDialog(null, "Failed to Login").setVisible(true);
+		System.exit(0);
+	}
+	
+	public void dialogProgramFinished() {
+		Object[] dialog_abort_message = {"Program finished."};
+		JOptionPane pane_dialog_abort = new JOptionPane(dialog_abort_message, JOptionPane.OK_OPTION);
+		pane_dialog_abort.createDialog(null, "Finished").setVisible(true);
 		System.exit(0);
 	}
 	

@@ -26,6 +26,9 @@ import java.util.ArrayList;
 public class Main {
 
 	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
+	
+	private String targetDirJars = "\\Desktop\\Annis Denka\\Executable jars"; //### create folder which holds exec jars
+	
 	private String envUserProfile;
 	private String targetDir;
 
@@ -59,13 +62,11 @@ public class Main {
 		main.createSubDir();
 		main.createFiles();
 
-		// main.callMailReceiverJar();
-		main.calculateExpanses();
+		//main.calculateExpanses(); ###testing
 
 	}
 
 	private void setEnvUserprofile() {
-
 		this.envUserProfile = System.getProperty("user.home");
 	}
 
@@ -119,10 +120,15 @@ public class Main {
 	 */
 	private void createDir() {
 		new File(buildRootDirString()).mkdirs();
+		new File(buildRootDirExecutables()).mkdirs();//###testing
 	}
 
 	private String buildRootDirString() {
 		return targetDir + "/" + this.curDate;
+	}
+	
+	private String buildRootDirExecutables() {
+		return envUserProfile + this.targetDirJars;
 	}
 
 	private void createSubDir() {
