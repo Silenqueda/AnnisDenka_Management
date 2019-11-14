@@ -184,14 +184,13 @@ public class MailReceiver {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
 		
 		//get login credentials
-		//GUI_popup getCredendtials = new GUI_popup();
+		GUI_popup getCredendtials = new GUI_popup();
 		//login to provided mail account
-		//receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
+		receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
 		//finishes program
-		//exitProgram(getCredendtials);
+		exitProgram(getCredendtials);
 	}
 
 }
