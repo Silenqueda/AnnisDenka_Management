@@ -124,10 +124,8 @@ public class MailReceiver {
 	private static String filterMessageForAmount(String messageToFilter, String regexCarsharing_Amount,
 			Message message) {
 		String filteredMessage = "";
-
 		Pattern pattern_expanse = Pattern.compile(regexCarsharing_Amount);
 		Matcher matcher_expanse = pattern_expanse.matcher(messageToFilter);
-
 		if (matcher_expanse.find()) {
 			filteredMessage += matcher_expanse.group(1) + "€";
 		}
@@ -137,10 +135,8 @@ public class MailReceiver {
 	private static String filterMessageForChargeDate(String messageToFilter, String regexCarsharing_ChargeDate,
 			Message message) {
 		String filteredMessage = "";
-
 		Pattern pattern_expanse = Pattern.compile(regexCarsharing_ChargeDate);
 		Matcher matcher_expanse = pattern_expanse.matcher(messageToFilter);
-
 		if (matcher_expanse.find()) {
 			filteredMessage += matcher_expanse.group(1);
 		}
@@ -150,13 +146,10 @@ public class MailReceiver {
 	private static String getDateFromMessage(Message message) throws MessagingException {
 		Date date = message.getReceivedDate();
 		Calendar calender = Calendar.getInstance();
-
 		calender.setTime(date);
-
 		int day = calender.get(Calendar.DAY_OF_MONTH);
 		int month = calender.get(Calendar.MONTH);
 		int year = calender.get(Calendar.YEAR);
-
 		return day + "." + (month + 1) + "." + year;
 	}
 
@@ -215,7 +208,21 @@ public class MailReceiver {
 
 	private static void createSubFilesFromMailData_all() {
 		
+		for(int i = 0; i < listOfExpanses.size(); i++) {
+			String date_payment = listOfExpanses.get(i).getDate_payment();
+			if(!new File("C:\\Users\\dbr\\Desktop\\Annis Denka\\.temp\\" + date_payment).exists()) {
+				File f = new File("C:\\Users\\dbr\\Desktop\\Annis Denka\\.temp\\" + date_payment);
+			}
+		}
+		
 	}
+	
+//	private static String parseDate_payment(String date_payment) {
+//		
+//		String 
+//		
+//		return parsed;
+//	}
 	
 	private static void writeToSubFiles() {
 
