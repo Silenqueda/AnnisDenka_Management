@@ -1,12 +1,19 @@
 AnnisDenka_Management is a private application to manage the expanses in a highly customized and sort of hardcoded way.
 
-### Monthly Setup ###
-This project generates an initial setup for the current month, depending on the current system time.
-After generating the new setup the system tries to calculate all expanses of the previous month. It sums every single file, sums up their result and writes it to ".gesamt = ".
+// check if all .jars are existing in jars folder
 
-### MailReceiver ###
+### 01_Monthly Setup ###
+This project generates an initial setup for the current month, depending on the current system time.
+After generating the new setup 
+
+### 02_MailReceiver ###
 This project connects to my personal mail account, navigates to my carsharing expanses, filters and writes them to the .temp directory.
 These dates and values are filtered and written to a file in the predefined directory "carsharing - " depending on the dateToPay.
+
+### 03_CalculatePreviousMonthExpanses ###
+The system tries to calculate all expanses of the previous month. It sums every single file, sums up their result and writes it to ".gesamt = ".
+
+
 
 
 ### TODOs ###
