@@ -34,6 +34,14 @@ public class Expanse {
 	public void setAmountToPay(String amountToPay) {
 		this.amountToPay = amountToPay;
 	}
+
+	//TODO toString or toFile
+	@Override
+	public String toString() {
+		return "Expanse [date_driven=" + date_driven + ", date_payment=" + date_payment + ", amountToPay=" + amountToPay
+				+ "]";
+	}
+	
 	
 	
 
