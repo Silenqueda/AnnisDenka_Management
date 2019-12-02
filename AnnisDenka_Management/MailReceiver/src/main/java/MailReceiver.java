@@ -1,8 +1,10 @@
 import java.io.*;
 import java.io.ObjectInputStream.GetField;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +17,7 @@ import GUI.GUI_popup;
 public class MailReceiver {
 
 	private String lastWrittenDate;
+	private static List<Expanse> listOfExpanses;
 
 	public static void receiveMails(String userName, String password, GUI_popup getCredentials) {
 
@@ -50,7 +53,7 @@ public class MailReceiver {
 					mailContent += getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT,
 							REGEX_CARSHARING_CHARGE_DATE);
 					mailContent += System.lineSeparator();
-					 System.out.println(mailContent);
+					System.out.println(mailContent);
 				}
 			}
 
@@ -72,6 +75,13 @@ public class MailReceiver {
 	 */
 	public static String getFilteredContentFromMessage(Message message, String regexCarsharing_Amount,
 			String regexCarsharing_ChargeDate) {
+
+		String date_driven = "";
+		String date_payment = "";
+		String amountToPay = "";
+
+		Expanse expanse;
+
 		try {
 			Object content = message.getContent();
 			if (content instanceof Multipart) {
@@ -81,15 +91,25 @@ public class MailReceiver {
 					Part part = multipart.getBodyPart(i);
 					if (part.isMimeType("text/plain") && filterMessageForChargeDate(part.getContent().toString(),
 							regexCarsharing_ChargeDate, message) != "") {
-						messageContent.append(getDateFromMessage(message));
-						messageContent.append(";");
-						messageContent.append(filterMessageForChargeDate(part.getContent().toString(),
-								regexCarsharing_ChargeDate, message));
-						messageContent.append(";");
-						messageContent.append(
-								filterMessageForAmount(part.getContent().toString(), regexCarsharing_Amount, message));
+						
+						date_driven = getDateFromMessage(message);
+						messageContent.append(date_driven);
+						messageContent.append("\t");
+
+						date_payment = filterMessageForChargeDate(part.getContent().toString(),
+								regexCarsharing_ChargeDate, message);
+						messageContent.append(date_payment);
+						messageContent.append("\t");
+
+						amountToPay = filterMessageForAmount(part.getContent().toString(), regexCarsharing_Amount,
+								message);
+						messageContent.append(amountToPay);
 					}
 				}
+				
+				//build object expanse
+				addExpanseToList(date_driven, date_payment, amountToPay);
+				
 				return messageContent.toString();
 			}
 			// return content.toString();
@@ -158,15 +178,15 @@ public class MailReceiver {
 	private static void createFileForMailData(String mailContent) {
 		String workspace_eclipse = System.getProperty("user.dir") + "\\";
 		String workspace_execJar = System.getProperty("user.dir") + "\\..\\";
-		
+
 		String subPath_eclipse = "temp\\";
 		String subPath_execJar = ".temp\\";
-		
+
 		String fileName = "mailData_all.txt";
-		
+
 		String absoluteFilePath;
-		
-		if(new File("..\\" + subPath_execJar).exists()) {
+
+		if (new File("..\\" + subPath_execJar).exists()) {
 			absoluteFilePath = "..\\" + subPath_execJar + fileName;
 		} else {
 			absoluteFilePath = workspace_eclipse + subPath_eclipse + fileName;
@@ -188,30 +208,48 @@ public class MailReceiver {
 				/* ignore */}
 		}
 	}
-	
+
 	private void getDateToPay() {
-		
+
 	}
-	
+
 	private static void createSubFilesFromMailData_all() {
 		
 	}
 	
 	private static void writeToSubFiles() {
-		
+
 	}
-	
+
+	private static void addExpanseToList(String date_driven, String date_payment, String amountToPay) {
+		if (listOfExpanses == null) {
+			listOfExpanses = new ArrayList<Expanse>();
+		}
+		listOfExpanses.add(new Expanse(date_driven, date_payment, amountToPay));
+	}
+
 	private static void exitProgram(GUI_popup getCredentials) {
 		getCredentials.dialogProgramFinished();
 	}
+	
+	
+	public static String tempToString() {
+		String temp = "";
+		
+		for(int i = 0; i < listOfExpanses.size(); i++) {
+			temp += listOfExpanses.get(i).toString() + System.lineSeparator();
+		}
+		return temp;
+	}
+	
 
 	public static void main(String[] args) {
-		
-		//get login credentials
+
+		// get login credentials
 		GUI_popup getCredendtials = new GUI_popup();
-		//login to provided mail account
+		// login to provided mail account
 		receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
-		//finishes program
+		// finishes program
 		exitProgram(getCredendtials);
 	}
 
