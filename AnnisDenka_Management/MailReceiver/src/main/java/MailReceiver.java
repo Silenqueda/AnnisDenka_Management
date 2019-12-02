@@ -82,10 +82,10 @@ public class MailReceiver {
 					if (part.isMimeType("text/plain") && filterMessageForChargeDate(part.getContent().toString(),
 							regexCarsharing_ChargeDate, message) != "") {
 						messageContent.append(getDateFromMessage(message));
-						messageContent.append("\t");
+						messageContent.append(";");
 						messageContent.append(filterMessageForChargeDate(part.getContent().toString(),
 								regexCarsharing_ChargeDate, message));
-						messageContent.append("\t");
+						messageContent.append(";");
 						messageContent.append(
 								filterMessageForAmount(part.getContent().toString(), regexCarsharing_Amount, message));
 					}
@@ -156,7 +156,6 @@ public class MailReceiver {
 	}
 
 	private static void createFileForMailData(String mailContent) {
-		//String workspace = "C:\\Users\\Dennis\\Tutorial\\GIT\\AnnisDenka_Management\\MailReceiver\\"; NOT GLOBAL!
 		String workspace_eclipse = System.getProperty("user.dir") + "\\";
 		String workspace_execJar = System.getProperty("user.dir") + "\\..\\";
 		
