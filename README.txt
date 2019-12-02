@@ -17,15 +17,21 @@ The system tries to calculate all expanses of the previous month. It sums every 
 
 
 ### TODOs ###
-1) MonthlySetup - initial setup throws error if prevMonthSetup does not exist.
-2) MonthlySetup - calculatecarsharing expanses [depending on: MailReceiver 3)]
-3) MonthlySetup - fix renaming of ".gesamt = .txt"
 
 1) MailReceiver - write mailData_all to temp
 2) MailReceiver - filter mailData_all by dateToPay (second date)
 3) MailReceiver - write filtered datasets to their dedicated file 
    (dateToPay = 12.10.2019 -> 10.2019.txt)
 
+1) Calculator - calculates only values with comma
+2) Calculator - calculate carsharing expanses [depending on: MailReceiver 3)]
+
 
 ### DONEs ###
+1) MonthlySetup - initial setup throws error if prevMonthSetup does not exist.
+	=> MonthlySetup's only purpose is to create directory tree
+2) MonthlySetup - calculate carsharing expanses [depending on: MailReceiver 3)]
+	=> job is handled by Calculator now
+3) MonthlySetup - fix renaming of ".gesamt = .txt"
+
 4) MailReceiver - executable Jar points to "\.temp\", eclipse run points to "\temp\"
