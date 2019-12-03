@@ -17,8 +17,6 @@ The system tries to calculate all expanses of the previous month. It sums every 
 
 
 ### TODOs ###
-4) MonthlySetup - create dir for Stromzähler fixed expanse            values [4 <-> 5]
-5) MonthlySetup - create file with fixed expanse values of Strom [5 <-> 4]
 
 1) MailReceiver - write mailData_all to temp
 2) MailReceiver - filter mailData_all by dateToPay (second date)
@@ -37,5 +35,9 @@ The system tries to calculate all expanses of the previous month. It sums every 
 2) MonthlySetup - calculate carsharing expanses [depending on: MailReceiver 3)]
 	=> job is handled by Calculator now
 3) MonthlySetup - fix renaming of ".gesamt = .txt"
+4) MonthlySetup - create dir for Stromzähler fixed expanse            values [4 <-> 5]
+5) MonthlySetup - create file with fixed expanse values of Strom [5 <-> 4]
+6) MonthlySetup - PopUp window if Stromkosten.txt is not existing and writes Grundkosten, Preis kwh to file
+
 
 4) MailReceiver - executable Jar points to "\.temp\", eclipse run points to "\temp\"
