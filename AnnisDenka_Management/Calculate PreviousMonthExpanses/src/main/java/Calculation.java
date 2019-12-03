@@ -63,6 +63,16 @@ public class Calculation {
 		return files;
 	}
 	
+	private String[] getPrevMonthDirNames_Strom() {
+		File file = new File(buildPrevMonthFilesDir_Ausgaben());
+		File[] filesList = file.listFiles();
+		String files[] = new String[filesList.length];
+		for (int i = 0; i < filesList.length; i++) {
+			files[i] = filesList[i].getName();
+		}
+		return files;
+	}
+	
 	public String getPreviousDate() {
 		return this.prevDate;
 	}
