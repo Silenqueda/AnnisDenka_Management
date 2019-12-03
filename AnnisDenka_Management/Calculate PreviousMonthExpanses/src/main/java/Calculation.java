@@ -54,7 +54,7 @@ public class Calculation {
 	}
 	
 	private String[] getPrevMonthDirNames() {
-		File file = new File(buildPrevMonthFilesDir());
+		File file = new File(buildPrevMonthFilesDir_Ausgaben());
 		File[] filesList = file.listFiles();
 
 		String files[] = new String[filesList.length];
@@ -85,12 +85,23 @@ public class Calculation {
 		return prevDate.split("_");
 	}
 	
-	private String buildPrevMonthFilesDir() {
+	// builds Ausgaben path
+	private String buildPrevMonthFilesDir_Ausgaben() {
 		if (prevDate.contains("12_")) {
 			return prevTargetDir.substring(0, prevTargetDir.length() - 4) + prevDate.substring(prevDate.length() - 4) + "/"
 					+ this.prevDate + "/" + this.subDirNames[0];
 		} else {
 			return prevTargetDir + "/" + this.prevDate + "/" + this.subDirNames[0];
+		}
+	}
+	
+	// builds Stromzähler path
+	private String buildPrevMonthFilesDir_Strom() {
+		if (prevDate.contains("12_")) {
+			return prevTargetDir.substring(0, prevTargetDir.length() - 4) + prevDate.substring(prevDate.length() - 4) + "/"
+					+ this.prevDate + "/" + this.subDirNames[1];
+		} else {
+			return prevTargetDir + "/" + this.prevDate + "/" + this.subDirNames[1];
 		}
 	}
 	
@@ -135,22 +146,22 @@ public class Calculation {
 		File newFile;
 
 		for (int i = 0; i < filelist.length; i++) {
-			oldFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i]);
+			oldFile = new File(buildPrevMonthFilesDir_Ausgaben() + "/" + filelist[i]);
 
 			if (i == 0 && filelist[i].startsWith(".")) {
 				value += (total + "").replace(",", ".");
-				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
+				newFile = new File(buildPrevMonthFilesDir_Ausgaben() + "/" + filelist[i] + " " + value + "€.txt");
 				File temp = new File(newFile.getAbsoluteFile().toString().replaceAll("[0-9]*.[0-9]*€.txt ", ""));
 				oldFile.renameTo(temp);
 			} else {
 				if (oldFile.getAbsoluteFile().toString().contains("€")) {
 					value += (sums[i] + "");
-					newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
+					newFile = new File(buildPrevMonthFilesDir_Ausgaben() + "/" + filelist[i] + " " + value + "€.txt");
 					File temp = new File(newFile.getAbsoluteFile().toString().replaceAll("[0-9]*.[0-9]*€.txt ", ""));
 					oldFile.renameTo(temp);
 				} else {
 					value += (sums[i] + "");
-					newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€.txt");
+					newFile = new File(buildPrevMonthFilesDir_Ausgaben() + "/" + filelist[i] + " " + value + "€.txt");
 					oldFile.renameTo(newFile);
 				}
 			}
@@ -161,7 +172,7 @@ public class Calculation {
 	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
 		String data = "";
 		if (this.getPreviousDate().contains("12_")) {
-			File f = new File(this.buildPrevMonthFilesDir() + "\\" + fileName);
+			File f = new File(this.buildPrevMonthFilesDir_Ausgaben() + "\\" + fileName);
 			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
 		} else {
 			File f = new File(this.prevTargetDir + "\\" + this.getPreviousDate() + "\\" + subDirNames[0] + "\\" + fileName);
@@ -176,10 +187,8 @@ public class Calculation {
 		List<String> regexMatches = new ArrayList<String>();
 		Pattern pattern = Pattern.compile(REGEX_CALC_EUR);
 		Matcher matcher = pattern.matcher(data);
-		int hits = 0;
 		while (matcher.find()) {
 			regexMatches.add(matcher.group(0));
-			hits++;
 		}
 		return regexMatches;
 	}
