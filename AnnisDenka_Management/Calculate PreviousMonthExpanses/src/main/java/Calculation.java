@@ -53,12 +53,10 @@ public class Calculation {
 		this.prevDate = tempDate;
 	}
 	
-	private String[] getPrevMonthDirNames() {
+	private String[] getPrevMonthDirNames_Ausgaben() {
 		File file = new File(buildPrevMonthFilesDir_Ausgaben());
 		File[] filesList = file.listFiles();
-
 		String files[] = new String[filesList.length];
-
 		for (int i = 0; i < filesList.length; i++) {
 			files[i] = filesList[i].getName();
 		}
@@ -107,7 +105,7 @@ public class Calculation {
 	
 	private void calculateExpanses() throws IOException, URISyntaxException {
 		List<List<String>> expansesList = new ArrayList<List<String>>();
-		String[] fileList = this.getPrevMonthDirNames();
+		String[] fileList = this.getPrevMonthDirNames_Ausgaben();
 		float sum = 0;
 		float[] sumOfFile;
 		float sumTotal = 0;
