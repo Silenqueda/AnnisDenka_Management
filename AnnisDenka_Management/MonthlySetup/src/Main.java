@@ -1,33 +1,24 @@
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-//import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-//import java.nio.file.Files;
-//import java.nio.file.Paths;
 import java.text.DateFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class Main {
 
 	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
-	private String targetDirJars = "\\Desktop\\Annis Denka\\Executable jars"; //### create folder which holds exec jars
-	private String targetDirTemp = "\\Desktop\\Annis Denka\\.temp";
+	private String targetDirJars = "\\Desktop\\Annis Denka\\Executable jars"; //### creates folder which holds exec jars
+	private String targetDirTemp = "\\Desktop\\Annis Denka\\.temp"; // ### creates folder whoch holds carsharing expanses
+	private String targetDirFixed = "\\Desktop\\Annis Denka\\.fixed"; //### creates folder which holds fixed values 
 	
 	private String envUserProfile;
 	private String targetDir;
@@ -38,6 +29,8 @@ public class Main {
 			" - Haushaltsartikel & Kosmetik.txt", " - Kleidung.txt", " - Nahrungsmittel.txt", " - Carsharing.txt" };
 
 	private String[] fileNames_Stromzaehler = { " - Stromzähler = .txt" };
+	
+	private String[] fileNames_fixed = {"Stromkosten.txt"};
 
 	private String curDate;
 
@@ -58,6 +51,8 @@ public class Main {
 		main.createDir();
 		main.createSubDir();
 		main.createFiles();
+		
+		System.exit(0);
 
 	}
 
@@ -102,6 +97,7 @@ public class Main {
 		new File(buildRootDirString()).mkdirs();
 		new File(buildRootDirExecutables()).mkdirs();
 		new File(buildRootDirTemp()).mkdirs();
+		new File(buildRootDirFixed()).mkdirs();
 	}
 
 	private String buildRootDirString() {
@@ -114,6 +110,10 @@ public class Main {
 	
 	private String buildRootDirTemp() {
 		return envUserProfile + this.targetDirTemp;
+	}
+	
+	private String buildRootDirFixed() {
+		return envUserProfile + this.targetDirFixed;
 	}
 
 	private void createSubDir() {
@@ -147,6 +147,44 @@ public class Main {
 			if (ds.contentEquals(subDirNames[1])) {
 				createTargetFile(subDirNames[1]);
 			}
+		}
+		creatFiles_Stromkosten();
+	}
+	
+	// creates File Stromkosten and calls a popup
+	private void creatFiles_Stromkosten() {
+		if(!new File(targetDirFixed+"\\"+fileNames_fixed[0]).exists()) {
+			String name = buildRootDirFixed()+"\\"+fileNames_fixed[0];
+			File fixed = new File(name);
+			enterStromkostenValues(fixed);
+		}
+	}
+    
+	// calls a poup and user enters values if file is not existing
+	private void enterStromkostenValues(File fixed) {
+		PopUp pop = new PopUp();
+		writeToStromkosten(pop, fixed);
+	}
+
+	// writes values to created file Stromkosten
+	private void writeToStromkosten(PopUp pop, File fixed) {
+		String grundkosten = pop.getGrundkosten();
+		String kwh = pop.getKwh();
+		
+		System.out.println(grundkosten + "   " + kwh);
+		
+		Writer writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(fixed)));
+			writer.write(defaultContentofFile_fixed(grundkosten, kwh));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
 		}
 	}
 
@@ -210,6 +248,12 @@ public class Main {
 		fileContent += "-------------------------------" + System.lineSeparator();
 		fileContent += "					  " + System.lineSeparator();
 		fileContent += "===============================";
+		return fileContent;
+	}
+	
+	private String defaultContentofFile_fixed(String grundkosten, String kwh) {
+		String fileContent = "Grundkosten: " + grundkosten + System.lineSeparator();
+		fileContent += "Preis kwh: " + kwh + System.lineSeparator();
 		return fileContent;
 	}
 
