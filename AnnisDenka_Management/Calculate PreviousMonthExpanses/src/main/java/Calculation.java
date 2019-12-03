@@ -17,8 +17,10 @@ import java.util.regex.Pattern;
 
 public class Calculation {
 	private String envUserProfile;
-	private String targetDirEnding = "\\Desktop\\Annis Denka\\Ausgaben";
+	
+	private String targetDirEnding_Ausgaben = "\\Desktop\\Annis Denka\\Ausgaben";
 	private String prevTargetDir;
+
 	private String prevDate;
 	
 	private final String REGEX_CALC_EUR = "[0-9]+,[0-9]{2}";
@@ -32,8 +34,8 @@ public class Calculation {
 		this.envUserProfile = System.getProperty("user.home");
 	}
 	
-	private void setPrevTargetDir() {
-		this.prevTargetDir = envUserProfile + targetDirEnding + " " + splitPrevDate()[1];
+	private void setPrevTargetDir_Ausgaben() {
+		this.prevTargetDir = envUserProfile + targetDirEnding_Ausgaben + " " + splitPrevDate()[1];
 	}
 	
 	private void setPreviousDate() {
@@ -64,7 +66,7 @@ public class Calculation {
 	}
 	
 	private String[] getPrevMonthDirNames_Strom() {
-		File file = new File(buildPrevMonthFilesDir_Ausgaben());
+		File file = new File(buildPrevMonthFilesDir_Strom());
 		File[] filesList = file.listFiles();
 		String files[] = new String[filesList.length];
 		for (int i = 0; i < filesList.length; i++) {
@@ -109,6 +111,7 @@ public class Calculation {
 			return prevTargetDir.substring(0, prevTargetDir.length() - 4) + prevDate.substring(prevDate.length() - 4) + "/"
 					+ this.prevDate + "/" + this.subDirNames[1];
 		} else {
+			System.out.println("test");
 			return prevTargetDir + "/" + this.prevDate + "/" + this.subDirNames[1];
 		}
 	}
@@ -125,12 +128,14 @@ public class Calculation {
 		float sumTotal = 0;
 
 		for (String s : fileList_Ausgaben) {
-			expansesList_Ausgaben.add(readExpansesFromFile(s));
+			expansesList_Ausgaben.add(readExpansesFromFile_Ausgaben(s));
+			System.out.println(s);//
 		}
 		
 		//under TESTING
 		for(String s : fileList_Strom) {
-			expansesList_Strom.add(readExpansesFromFile(s));
+			expansesList_Strom.add(readExpansesFromFile_Strom(s));
+			System.out.println(s);//
 		}
 
 		sumOfFile = new float[expansesList_Ausgaben.size()];
@@ -186,7 +191,7 @@ public class Calculation {
 		}
 	}
 
-	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
+	private List<String> readExpansesFromFile_Ausgaben(String fileName) throws IOException, URISyntaxException {
 		String data = "";
 		if (this.getPreviousDate().contains("12_")) {
 			File f = new File(this.buildPrevMonthFilesDir_Ausgaben() + "\\" + fileName);
@@ -196,7 +201,19 @@ public class Calculation {
 			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
 		}
 		List<String> extractedExpanses = getRegExMatches(data);
-
+		return extractedExpanses;
+	}
+	
+	private List<String> readExpansesFromFile_Strom(String fileName) throws IOException, URISyntaxException {
+		String data = "";
+		if (this.getPreviousDate().contains("12_")) {
+			File f = new File(this.buildPrevMonthFilesDir_Ausgaben() + "\\" + fileName);
+			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
+		} else {
+			File f = new File(this.prevTargetDir + "\\" + this.getPreviousDate() + "\\" + subDirNames[1] + "\\" + fileName);
+			data = new String(Files.readAllBytes(Paths.get(f.toURI())));
+		}
+		List<String> extractedExpanses = getRegExMatches(data);
 		return extractedExpanses;
 	}
 	
@@ -216,7 +233,7 @@ public class Calculation {
 		
 		cal.setEnvUserprofile();
 		cal.setPreviousDate();
-		cal.setPrevTargetDir();
+		cal.setPrevTargetDir_Ausgaben();
 		
 		cal.calculateExpanses();
 		
