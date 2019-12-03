@@ -114,30 +114,39 @@ public class Calculation {
 	}
 	
 	private void calculateExpanses() throws IOException, URISyntaxException {
-		List<List<String>> expansesList = new ArrayList<List<String>>();
-		String[] fileList = this.getPrevMonthDirNames_Ausgaben();
+		List<List<String>> expansesList_Ausgaben = new ArrayList<List<String>>();
+		List<List<String>> expansesList_Strom = new ArrayList<List<String>>();
+		
+		String[] fileList_Ausgaben = this.getPrevMonthDirNames_Ausgaben();
+		String[] fileList_Strom = this.getPrevMonthDirNames_Strom();//
+		
 		float sum = 0;
 		float[] sumOfFile;
 		float sumTotal = 0;
 
-		for (String s : fileList) {
-			expansesList.add(readExpansesFromFile(s));
+		for (String s : fileList_Ausgaben) {
+			expansesList_Ausgaben.add(readExpansesFromFile(s));
+		}
+		
+		//under TESTING
+		for(String s : fileList_Strom) {
+			expansesList_Strom.add(readExpansesFromFile(s));
 		}
 
-		sumOfFile = new float[expansesList.size()];
+		sumOfFile = new float[expansesList_Ausgaben.size()];
 
 		List<Float> expansesOfType = new ArrayList<Float>();
 
-		for (int i = 0; i < expansesList.size(); i++) {
-			for (int j = 0; j < expansesList.get(i).size(); j++) {
-				expansesOfType.add(Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", ".")));
-				sum += Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", "."));
+		for (int i = 0; i < expansesList_Ausgaben.size(); i++) {
+			for (int j = 0; j < expansesList_Ausgaben.get(i).size(); j++) {
+				expansesOfType.add(Float.parseFloat(expansesList_Ausgaben.get(i).get(j).replaceFirst(",", ".")));
+				sum += Float.parseFloat(expansesList_Ausgaben.get(i).get(j).replaceFirst(",", "."));
 			}
 			sumOfFile[i] = sum;
 			sum = 0;
 		}
 		sumTotal = calcTotalExpanses(sumOfFile);
-		this.addExpansesToFileNames(sumOfFile, sumTotal, fileList);
+		this.addExpansesToFileNames(sumOfFile, sumTotal, fileList_Ausgaben);
 	}
 	
 	private float calcTotalExpanses(float[] sumOfFile) {
