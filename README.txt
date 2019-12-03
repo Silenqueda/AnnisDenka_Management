@@ -17,6 +17,8 @@ The system tries to calculate all expanses of the previous month. It sums every 
 
 
 ### TODOs ###
+4) MonthlySetup - create dir for Stromzähler fixed expanse            values [4 <-> 5]
+5) MonthlySetup - create file with fixed expanse values of Strom [5 <-> 4]
 
 1) MailReceiver - write mailData_all to temp
 2) MailReceiver - filter mailData_all by dateToPay (second date)
@@ -25,6 +27,8 @@ The system tries to calculate all expanses of the previous month. It sums every 
 
 1) Calculator - calculates only values with comma
 2) Calculator - calculate carsharing expanses [depending on: MailReceiver 3)]
+3) Calculator - calculate Stromzähler expanses
+	=> read from file with needed entries (fixed price, price 	   per kwh)
 
 
 ### DONEs ###
