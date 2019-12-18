@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.mail.*;
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
+import Calculation.DataGatherer;
 import GUI.GUI_popup;
 
 public class MailReceiver {
@@ -252,6 +253,10 @@ public class MailReceiver {
 
 	public static void main(String[] args) {
 
+		//testing of DataGatherer
+		//DataGatherer dg = new DataGatherer();
+		//dg.readFile();
+		
 		// get login credentials
 		GUI_popup getCredendtials = new GUI_popup();
 		// login to provided mail account
