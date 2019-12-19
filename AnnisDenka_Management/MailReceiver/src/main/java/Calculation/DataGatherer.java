@@ -35,6 +35,7 @@ public class DataGatherer {
 		try {
 			readFile = new BufferedReader(new FileReader(home + mailDataPath));
 			String line = readFile.readLine();
+			System.out.println("*** DataGatherer -> Read file and build Expanse Objects ***");
 			while(line != null) {
 				if (line.length()>0) { // this gets rid of blank lines in file
 					wholeDownloadedDataSet.add(buildExpanseFromFile(line));
