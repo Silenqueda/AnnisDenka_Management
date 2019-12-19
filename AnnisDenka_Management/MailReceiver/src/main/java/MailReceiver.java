@@ -38,6 +38,7 @@ public class MailReceiver {
 
 			Session emailSession = Session.getDefaultInstance(properties);
 			Store emailStore = emailSession.getStore("imaps");
+			System.out.println("*** Connecting to mail account ***");
 			emailStore.connect("imap.gmx.net", userName, password); // ### MessagingExecption
 
 			Folder emailFolder = emailStore.getFolder("Inbox");
@@ -47,6 +48,7 @@ public class MailReceiver {
 
 			String mailContent = "";
 
+			System.out.println("*** Reading mail content ***");
 			for (Folder f : emailFolderList) {
 				f.open(Folder.READ_ONLY);
 				messages = f.getMessages();
@@ -185,7 +187,7 @@ public class MailReceiver {
 		} else {
 			absoluteFilePath = workspace_eclipse + subPath_eclipse + fileName;
 		}
-		System.out.println("File created at " + absoluteFilePath);
+		System.out.println("*** File created at " + absoluteFilePath + " ***");
 		writeToFile_mailData_all(absoluteFilePath, mailContent);
 	}
 
@@ -254,8 +256,8 @@ public class MailReceiver {
 	public static void main(String[] args) {
 
 		//testing of DataGatherer
-		//DataGatherer dg = new DataGatherer();
-		//dg.readFile();
+		DataGatherer dg = new DataGatherer();
+		dg.readFile();
 		
 		// get login credentials
 		GUI_popup getCredendtials = new GUI_popup();
