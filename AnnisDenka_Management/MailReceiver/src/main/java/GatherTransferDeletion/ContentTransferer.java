@@ -10,17 +10,22 @@ public class ContentTransferer {
 	private String mailDataPath = "\\Desktop\\Annis Denka\\.temp"; // holds all DataSets
 
 	private String ausgabenDirPath = "\\Desktop\\Annis Denka\\";
-	private String ausgaben = "Ausgaben ";
+	private String pathToCarsharingFile = "Ausgaben\\";
+	private String ausgaben = "Ausgaben "; //name for filtering
+	
+	//home + ausgabenDirPath + pathToCarsharingFile
 
-	private String[] existingAusgabenDirs;
+	private String[] existingAusgabenDirs; // holds all found 'Ausgaben yyyy' folder names
+	
+	private String[] allExistingfolder;
 
 	public ContentTransferer() {
-
+		existingAusgabenDirs = filterAusgabenDirs();
 	}
 
 	
 	//filters directory Annis Denka for Ausgaben folder
-	public String[] filterAusgabenDirs() {
+	private String[] filterAusgabenDirs() {
 		File file = new File(home + ausgabenDirPath);
 		File[] directories = file.listFiles();
 		
@@ -38,6 +43,7 @@ public class ContentTransferer {
 		return fileNames;
 	}
 
+	//calculates length for array which holds all found Ausgaben directories
 	private int calcFileNamesLength(File[] directories) {
 		int temp = 0;
 		for (int i = 0; i < directories.length; i++) {
@@ -48,6 +54,13 @@ public class ContentTransferer {
 		return temp;
 	}
 
+	//gets all existing directories in Ausgaben yyyy
+	private String[] filterForAllFolderInExistingAusgabeDir() {
+		String[] temp = null;
+	
+		return temp;
+	}
+	
 	public void copyFileToMatchingDirectory() {
 
 	}
