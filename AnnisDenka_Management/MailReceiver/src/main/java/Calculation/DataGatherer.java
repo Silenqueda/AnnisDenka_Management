@@ -1,10 +1,14 @@
 package Calculation;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import DataObjects.*;
@@ -17,8 +21,8 @@ public class DataGatherer {
 	
 	private String home = System.getProperty("user.home");
 	private String workspace = System.getProperty("user.dir");
-	private String mailDataPath = "\\Desktop\\Annis Denka\\.temp\\mailData_all.txt";
-	
+	private String mailDataPath = "\\Desktop\\Annis Denka\\.temp"; //holds all DataSets 
+	private String mailDataFileName = "\\mailData_all.txt"; //fileName of all datasets 
 	
 	public DataGatherer() {
 		this.listOfSeparatedByMonths = new ArrayList<List>();
@@ -33,14 +37,14 @@ public class DataGatherer {
 		}
 		
 		try {
-			readFile = new BufferedReader(new FileReader(home + mailDataPath));
+			readFile = new BufferedReader(new FileReader(home + mailDataPath + mailDataFileName));
 			String line = readFile.readLine();
 			System.out.println("*** DataGatherer -> Read file and build Expanse Objects ***");
 			while(line != null) {
 				if (line.length()>0) { // this gets rid of blank lines in file
 					wholeDownloadedDataSet.add(buildExpanseFromFile(line));
 				}
-				line = readFile.readLine();
+				line = readFile.readLine(); //reads next line
 			}
 			readFile.close();
 		} catch (IOException e) {
@@ -70,14 +74,49 @@ public class DataGatherer {
 		} else if(line.contains(";")) {
 			splittedString = deleteSpacesFromLine.split(";");
 		} else {
-			System.out.println("Wrong value separator. '\t' or ';' are allowed.");
+			System.out.println("*** DataGatherer -> Wrong value separator. '\t' or ';' are allowed. ***");
+			System.out.println("*** DataGatherer -> Exit ***");
 			System.exit(0);
 		}
-		
 		return splittedString;
 	}
 	
 	//TODO: separate content of wholeDownloadedDataSet by Months
+	public List separateDataSetByDateToPay() throws ParseException, IOException {
+		List monthList = null;
+		List month = null;
+		
+		String currentMonth = "";
+		
+		for(int i = 0; i < wholeDownloadedDataSet.size(); i++) {
+			//System.out.println("*** DataGatherer -> " + wholeDownloadedDataSet.get(i).getDate_payment());
+			String dateToPay = wholeDownloadedDataSet.get(i).getDate_payment();			
+			Date monthAndYear = new SimpleDateFormat("dd.MM.yyyy").parse(dateToPay);  
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(monthAndYear);
+			//System.out.println("*** DataGatherer -> " + (calender.get(Calendar.MONTH)+1) + "." + calender.get(Calendar.YEAR));
+			
+			if((calender.get(Calendar.MONTH)+1) < 10) {
+				currentMonth = "0" + (calender.get(Calendar.MONTH)+1) + "." + calender.get(Calendar.YEAR);
+			} else {
+				currentMonth = (calender.get(Calendar.MONTH)+1) + "." + calender.get(Calendar.YEAR);
+			}
+			System.out.println("*** DataGatherer -> Create file");
+			createFileIfNotExistent(currentMonth);
+		}
+		return null;
+	}
+	
+	// creates File for every non existing month in .temp directory
+	private void createFileIfNotExistent(String currentMonth) throws IOException {
+		File file = new File(home + mailDataPath + "\\" + currentMonth + ".txt");
+		if(!file.exists()) {
+			file.createNewFile();
+			System.out.println("*** DataGatherer -> File created ***");
+		} else {
+			System.out.println("*** DataGatherer -> File already exists ***");
+		}
+	}
 	
 	
 	public void printWholeDownloadedDataSet() {
