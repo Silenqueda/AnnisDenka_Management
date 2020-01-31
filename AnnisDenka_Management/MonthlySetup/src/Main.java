@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 //import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 //import java.nio.file.Files;
 //import java.nio.file.Paths;
 import java.text.DateFormatSymbols;
@@ -34,10 +38,12 @@ public class Main {
 	private String[] fileNames_Stromzaehler = { " - Stromzähler = " };
 
 	private String curDate;
+	
+	private String prevDate;
 
 	private List allFilePahts;
 
-	// private final String REGEX_CALC_EUR = "[0-9]+,[0-9]{2}";
+	private final String REGEX_CALC_EUR = "[0-9]+,[0-9]{2}";
 
 	// --------------------------------------------------//
 
@@ -45,7 +51,9 @@ public class Main {
 
 		Main main = new Main();
 		main.curDate = main.getCurrentDate();
-		// main.prevDate = main.getPreviousDate();
+		System.out.println(main.curDate);
+		main.prevDate = main.getPreviousDate();
+		System.out.println(main.prevDate);
 
 		main.setEnvUserprofile();
 		main.setTargetDir();
@@ -54,8 +62,8 @@ public class Main {
 		main.createSubDir();
 		main.createFiles();
 
-		main.callMailReceiverJar();
-		// main.calculateExpanses();
+		//main.callMailReceiverJar();
+		main.calculateExpanses();
 
 	}
 
@@ -90,21 +98,21 @@ public class Main {
 		return this.getCurrentMonth() + "_" + this.getCurrentYear();
 	}
 
-//	private String getPreviousDate() {
-//		String tempDate;
-//		String curMonth = this.getCurrentMonth();
-//		String curYear = this.getCurrentYear();
-//		
-//		if(curMonth.contentEquals("01")) {			
-//			return tempDate = "01_" + (Integer.parseInt(curYear.toString()) -1);			
-//		} else {
-//			if((Integer.parseInt(curMonth) -1) < 10) {
-//				return tempDate = "0" + (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
-//			} else {
-//				return tempDate = (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
-//			}
-//		}
-//	}
+	private String getPreviousDate() {
+		String tempDate;
+		String curMonth = this.getCurrentMonth();
+		String curYear = this.getCurrentYear();
+		
+		if(curMonth.contentEquals("01")) {			
+			return tempDate = "12_" + (Integer.parseInt(curYear.toString()) -1);			
+		} else {
+			if((Integer.parseInt(curMonth) -1) < 10) {
+				return tempDate = "0" + (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
+			} else {
+				return tempDate = (Integer.parseInt(curMonth) -1) + "_" + Integer.parseInt(curYear.toString());
+			}
+		}
+	}
 
 	private String[] splitDate() {
 		return curDate.split("_");
@@ -138,18 +146,18 @@ public class Main {
 		return directories;
 	}
 
-//	private String[] getPrevMonthDirNames() {
-//		File file = new File(buildPrevMonthFilesDir());
-//		File[] filesList = file.listFiles();
-//		
-//		String files[] = new String[filesList.length];
-//		
-//		for(int i = 0; i < filesList.length; i++) {
-//			files[i] = filesList[i].getName();
-//		}
-//		
-//		return files;
-//	}
+	private String[] getPrevMonthDirNames() {
+		File file = new File(buildPrevMonthFilesDir());
+		File[] filesList = file.listFiles();
+		
+		String files[] = new String[filesList.length];
+		
+		for(int i = 0; i < filesList.length; i++) {
+			files[i] = filesList[i].getName();
+		}
+		
+		return files;
+	}
 
 	/**
 	 * creates files in dir Einkäufe
@@ -191,6 +199,7 @@ public class Main {
 			}
 		}
 		
+		
 		setAllFilePahts(provideAllAbsolutFilePaths());
 	}
 
@@ -209,7 +218,7 @@ public class Main {
 		Writer writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName + ".txt"),
+					new FileOutputStream(buildRootDirString() + "/" + pathNameForFile + "/" + fileName),
 					"utf-8"));
 			writer.write(content);
 		} catch (IOException ex) {
@@ -294,88 +303,94 @@ public class Main {
 		return allFilePahts;
 	}
 
-//	private void calculateExpanses() throws IOException, URISyntaxException {
-//		List<List<String>> expansesList = new ArrayList<List<String>>();
-//		String[] fileList = this.getPrevMonthDirNames();
-//		float sum = 0;
-//		float[] sumOfFile;
-//		float sumTotal = 0;
-//		
-//		for(String s : fileList) {
-//			 expansesList.add(readExpansesFromFile(s));			 
-//		}
-//		
-//		sumOfFile = new float[expansesList.size()];
-//
-//		List<Float> expansesOfType = new ArrayList<Float>();
-//		
-//		for(int i = 0; i < expansesList.size(); i++) {
-//			for(int j = 0; j < expansesList.get(i).size(); j++) {
-//				expansesOfType.add(Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", ".")));
-//				sum += Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", "."));
-//			}
-//			sumOfFile[i] = sum;
-//			sum = 0;
-//			//System.out.println(sumOfFile[i]);
-//		}
-//		sumTotal = calcTotalExpanses(sumOfFile);
-//		//System.out.println("Total: " + sumTotal);
-//		this.addExpansesToFileNames(sumOfFile, sumTotal, fileList);
-//	}
+	private void calculateExpanses() throws IOException, URISyntaxException {
+		List<List<String>> expansesList = new ArrayList<List<String>>();
+		String[] fileList = this.getPrevMonthDirNames();
+		float sum = 0;
+		float[] sumOfFile;
+		float sumTotal = 0;
+		
+		for(String s : fileList) {
+			 expansesList.add(readExpansesFromFile(s));			 
+		}
+		
+		sumOfFile = new float[expansesList.size()];
 
-//	private float calcTotalExpanses(float[] sumOfFile) {
-//		int tempSum = 0;
-//		for(Float f :  sumOfFile) {
-//			tempSum += f;
-//		}
-//		return tempSum;
-//	}
+		List<Float> expansesOfType = new ArrayList<Float>();
+		
+		for(int i = 0; i < expansesList.size(); i++) {
+			for(int j = 0; j < expansesList.get(i).size(); j++) {
+				expansesOfType.add(Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", ".")));
+				sum += Float.parseFloat(expansesList.get(i).get(j).replaceFirst(",", "."));
+			}
+			sumOfFile[i] = sum;
+			sum = 0;
+		}
+		sumTotal = calcTotalExpanses(sumOfFile);
+		this.addExpansesToFileNames(sumOfFile, sumTotal, fileList);
+	}
 
-//	private void addExpansesToFileNames(float[] sums, float total, String[] filelist) {
-//		String value = "";
-//		File oldFile;
-//		File newFile;
-//		
-//		for(int i = 0; i < filelist.length; i++) {
-//			oldFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i]);
-//			
-//			if(i == 0 && filelist[i].startsWith(".")) {
-//				value += (total+"").replace(".", ",") + "€";
-//				
-//				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + ".txt");
-//				oldFile.renameTo(newFile);
-//			} else {
-//				value += (sums[i]+"").replace(".", "," + "€");
-//				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + ".txt");
-//				oldFile.renameTo(newFile);
-//			}
-//			value = "";
-//		}
-//	}
+	private float calcTotalExpanses(float[] sumOfFile) {
+		int tempSum = 0;
+		for(Float f :  sumOfFile) {
+			tempSum += f;
+		}
+		return tempSum;
+	}
 
-//	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
-//		String data = ""; 
-//		File f = new File(this.targetDir + "\\" + getPreviousDate() +  "\\" + subDirNames[0] + "\\" + fileName);		
-//	    data = new String(Files.readAllBytes(Paths.get(f.toURI()))); 	    
-//	    List<String> extractedExpanses = getRegExMatches(data);
-//	    
-//		return extractedExpanses;
-//	}
+	private void addExpansesToFileNames(float[] sums, float total, String[] filelist) {
+		String value = "";
+		File oldFile;
+		File newFile;
+		
+		for(int i = 0; i < filelist.length; i++) {
+			oldFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i]);
+			
+			if(i == 0 && filelist[i].startsWith(".")) {
+				value += (total+"").replace(",", ".");
+				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€");
+				oldFile.renameTo(newFile);
+			} else {
+				value += (sums[i]+"");
+				newFile = new File(buildPrevMonthFilesDir() + "/" + filelist[i] + " " + value + "€");
+				oldFile.renameTo(newFile);
+			}
+			value = "";
+		}
+	}
 
-//	private List<String> getRegExMatches(String data) {
-//		List<String> regexMatches = new ArrayList<String>();
-//		Pattern pattern = Pattern.compile(REGEX_CALC_EUR);
-//		Matcher matcher = pattern.matcher(data);
-//		int hits = 0;
-//		while (matcher.find())
-//		{
-//		    regexMatches.add(matcher.group(0));
-//		    hits++;
-//		}
-//		return regexMatches;
-//	}
+	private List<String> readExpansesFromFile(String fileName) throws IOException, URISyntaxException {
+		String data = ""; 
+		File f = new File(this.targetDir + "\\" + this.getPreviousDate() +  "\\" + subDirNames[0] + "\\" + fileName);		
+		System.out.println(f.getAbsolutePath());
+	    data = new String(Files.readAllBytes(Paths.get(f.toURI()))); 	    
+	    List<String> extractedExpanses = getRegExMatches(data);
+	    
+		return extractedExpanses;
+	}
 
-//	private String buildPrevMonthFilesDir() {
-//		return targetDir + "/" + this.prevDate + "/" + this.subDirNames[0];
-//	}
+	private List<String> getRegExMatches(String data) {
+		List<String> regexMatches = new ArrayList<String>();
+		Pattern pattern = Pattern.compile(REGEX_CALC_EUR);
+		Matcher matcher = pattern.matcher(data);
+		int hits = 0;
+		while (matcher.find())
+		{
+		    regexMatches.add(matcher.group(0));
+		    hits++;
+		}
+		return regexMatches;
+	}
+
+	//TODO!!! Jahreswechsel funktioniert nicht richtig!
+	private String buildPrevMonthFilesDir() {
+		//System.out.println(targetDir + "/" + this.prevDate + "/" + this.subDirNames[0]);
+		if(prevDate.contains("12_")) {
+			System.out.println("if " + targetDir.substring(0, targetDir.length()-4) + prevDate.substring(prevDate.length() -4) + "/" + this.prevDate + "/" + this.subDirNames[0]);
+			return targetDir.substring(0, targetDir.length()-4) + prevDate.substring(prevDate.length() -4) + "/" + this.prevDate + "/" + this.subDirNames[0];
+		} else {
+			System.out.println("else " + targetDir + "/" + this.prevDate + "/" + this.subDirNames[0]);
+			return targetDir + "/" + this.prevDate + "/" + this.subDirNames[0];
+		}
+	}
 }
