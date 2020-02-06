@@ -76,7 +76,9 @@ public class DataGatherer {
 		if (line.contains("\t")) {
 			splittedString = deleteSpacesFromLine.split("\t");
 		} else if (line.contains(";")) {
-			splittedString = deleteSpacesFromLine.split(";");
+			splittedString = deleteSpacesFromLine.split(",");
+		}else if(line.contains(",")) {
+			System.out.println("Nothing to do here.");
 		} else {
 			System.out.println("*** DataGatherer -> Wrong value separator. '\t' or ';' are allowed. ***");
 			System.out.println("*** DataGatherer -> Exit ***");

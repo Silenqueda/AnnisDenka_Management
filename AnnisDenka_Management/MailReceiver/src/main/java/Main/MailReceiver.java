@@ -1,7 +1,6 @@
 package Main;
 import java.io.*;
-import java.io.ObjectInputStream.GetField;
-import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,18 +10,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.*;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
-import Calculation.DataGatherer;
 import DataObjects.Expanse;
 import GUI.GUI_popup;
+import GatherTransferDeletion.ContentTransferer;
+import GatherTransferDeletion.DataGatherer;
 
 public class MailReceiver {
 
 	private String lastWrittenDate;
 	private static List<Expanse> listOfExpanses;
 
-	public static void receiveMails(String userName, String password, GUI_popup getCredentials) {
+	public static void receiveMails(String userName, String password, GUI_popup getCredentials) throws IOException {
 
 		/**
 		 * 0 = Datum am Tag der Fahrt 1 = Kosten der Fahrt
@@ -56,11 +55,14 @@ public class MailReceiver {
 				messages = f.getMessages();
 				for (Message m : messages) {
 					mailContent += getFilteredContentFromMessage(m, REGEX_CARSHARING_AMOUNT,
-							REGEX_CARSHARING_CHARGE_DATE);
+							REGEX_CARSHARING_CHARGE_DATE);					
 					mailContent += System.lineSeparator();
 					System.out.println(mailContent);
 				}
 			}
+			
+			
+			mailContent += changeLastLine();
 
 			createFileForMailData(mailContent);
 
@@ -70,11 +72,26 @@ public class MailReceiver {
 			getCredentials.dialogFailedLoginAttemp();
 		}
 	}
+	
+	private static String changeLastLine() throws IOException {
+		BufferedReader input = new BufferedReader(new FileReader("D:\\Private\\AnnisDenka_Management\\AnnisDenka_Management\\MailReceiver\\temp\\mailData_all.txt"));
+		String last = "", line = "", last_replaced = "";
+		
+		while ((line = input.readLine()) != null) {
+			if(line.endsWith(",")) {
+				last = line;
+			}
+		}
+		System.out.println(last);
+		last_replaced = last.substring(0, last.length() -1) + ";";
+		System.out.println(last_replaced);
+		return last_replaced;		
+	}
 
 	/**
 	 * Methodes provides date and expanse of mail content
 	 * 
-	 * @param message:         the mail
+	 * @param message: the mail
 	 * @param regexCarsharing: regex to find xx,xx€ in text
 	 * @return date & expanse
 	 */
@@ -98,17 +115,18 @@ public class MailReceiver {
 							regexCarsharing_ChargeDate, message) != "") {
 						
 						date_driven = getDateFromMessage(message);
-						messageContent.append(date_driven);
-						messageContent.append("\t");
+						messageContent.append("('"+date_driven+"'");
+						messageContent.append(",");
 
 						date_payment = filterMessageForChargeDate(part.getContent().toString(),
 								regexCarsharing_ChargeDate, message);
-						messageContent.append(date_payment);
-						messageContent.append("\t");
+						messageContent.append("'"+date_payment+"'");
+						messageContent.append(",");
 
 						amountToPay = filterMessageForAmount(part.getContent().toString(), regexCarsharing_Amount,
 								message);
-						messageContent.append(amountToPay);
+						messageContent.append(amountToPay+")");
+						messageContent.append(",");
 					}
 				}
 				
@@ -132,7 +150,7 @@ public class MailReceiver {
 		Pattern pattern_expanse = Pattern.compile(regexCarsharing_Amount);
 		Matcher matcher_expanse = pattern_expanse.matcher(messageToFilter);
 		if (matcher_expanse.find()) {
-			filteredMessage += matcher_expanse.group(1) + "€";
+			filteredMessage += matcher_expanse.group(1).replace(",", ".");
 		}
 		return filteredMessage;
 	}
@@ -255,16 +273,22 @@ public class MailReceiver {
 	}
 	
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException, IOException {
 
-		//testing of DataGatherer
-		DataGatherer dg = new DataGatherer();
-		dg.readFile();
 		
 		// get login credentials
 		GUI_popup getCredendtials = new GUI_popup();
 		// login to provided mail account
 		receiveMails(getCredendtials.getUserName(), getCredendtials.getPassword(), getCredendtials);
+		
+		//testing of DataGatherer
+		DataGatherer dg = new DataGatherer();
+		dg.readFile();
+		dg.separateDataSetByDateToPay();
+		
+		//testing of ContentTransferer
+		ContentTransferer ct = new ContentTransferer();
+		
 		// finishes program
 		exitProgram(getCredendtials);
 	}
