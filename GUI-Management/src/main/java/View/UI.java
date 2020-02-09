@@ -10,24 +10,34 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import Database.DBConnection;
+import Handler.DataProvider;
+
 public class UI extends JFrame {
+	
+	DataProvider dataProvider = new DataProvider();
+	DBConnection dbc;
 
 	// Food input
+	private final String food_tablename = "expanse_food";
 	private String food_date;
 	private float food_price;
 	private String food_description;
 
 	// Clothes input
+	private final String clothes_tablename = "expanse_clothes";
 	private String clothes_date;
 	private float clothes_price;
 	private String clothes_description;
 
 	// Cosmetics input
+	private final String cosmetics_tablename = "expanse_cosmetics";
 	private String cosmetics_date;
 	private float cosmetics_price;
 	private String cosmetics_description;
 
 	// Other input
+	private final String other_tablename = "expanse_other";
 	private String other_date;
 	private float other_price;
 	private String other_description;
@@ -104,17 +114,22 @@ public class UI extends JFrame {
 					label_food_statusText.setText("input check passed");
 					passed = true;
 					button_food_send.setEnabled(true);
+					
 				} else {
 					label_food_statusText.setText("input check failed");
 				}
 			}
+
 		});
 		this.add(button_food_check);
 
 		// Food Button action - send
 		button_food_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				// Send data to database
+				dataProvider.write_toDatabase(food_tablename, food_date, food_price, food_description);
+				
 				button_food_send.setEnabled(false);
 				label_food_statusText.setText("sent to database");
 			}
@@ -192,6 +207,8 @@ public class UI extends JFrame {
 		button_clothes_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
+				dataProvider.write_toDatabase(clothes_tablename, clothes_date, clothes_price, clothes_description);
+				
 				button_clothes_send.setEnabled(false);
 				label_clothes_statusText.setText("sent to database");
 			}
@@ -269,6 +286,8 @@ public class UI extends JFrame {
 		button_cosmetics_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
+				dataProvider.write_toDatabase(cosmetics_tablename, cosmetics_date, cosmetics_price, cosmetics_description);
+				
 				button_cosmetics_send.setEnabled(false);
 				label_cosmetics_statusText.setText("sent to database");
 			}
@@ -346,6 +365,8 @@ public class UI extends JFrame {
 		button_other_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
+				dataProvider.write_toDatabase(other_tablename, other_date, other_price, other_description);
+				
 				button_other_send.setEnabled(false);
 				label_other_statusText.setText("sent to database");
 			}
@@ -389,5 +410,7 @@ public class UI extends JFrame {
 		}
 		return true;
 	}
+	
+	
 
 }
