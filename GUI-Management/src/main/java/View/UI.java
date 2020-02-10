@@ -14,9 +14,6 @@ import Handler.InputChecker;
 
 public class UI extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5613140432014649437L;
 	DataProvider dataProvider = new DataProvider();
 	DBConnection dbc;
@@ -153,7 +150,7 @@ public class UI extends JFrame {
 
 		// clothes Label - StatusText
 		final JLabel label_clothes_statusText = new JLabel();
-		label_clothes_statusText.setBounds(620, 72, 200, 20);
+		label_clothes_statusText.setBounds(210, 95, 200, 20);
 		this.add(label_clothes_statusText);
 
 		// clothes - Label - clothes
@@ -231,7 +228,7 @@ public class UI extends JFrame {
 
 		// cosmetics Label - StatusText
 		final JLabel label_cosmetics_statusText = new JLabel();
-		label_cosmetics_statusText.setBounds(620, 132, 200, 20);
+		label_cosmetics_statusText.setBounds(210, 152, 200, 20);
 		this.add(label_cosmetics_statusText);
 
 		// cosmetics - Label - cosmetics
@@ -310,7 +307,7 @@ public class UI extends JFrame {
 
 		// other Label - StatusText
 		final JLabel label_other_statusText = new JLabel();
-		label_other_statusText.setBounds(620, 192, 200, 20);
+		label_other_statusText.setBounds(210, 222, 200, 20);
 		this.add(label_other_statusText);
 
 		// other - Label - other
