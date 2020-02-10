@@ -2,8 +2,6 @@ package View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,8 +14,16 @@ import Handler.InputChecker;
 
 public class UI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5613140432014649437L;
 	DataProvider dataProvider = new DataProvider();
 	DBConnection dbc;
+	
+	// Globals
+	private final String globalLabel_centerText_start = "<html><div style='text-align: center;'>";
+	private final String globalLabel_centerText_end = "</div></html>";
 
 	// Food input
 	private final String food_tablename = "expanse_food";
@@ -67,7 +73,7 @@ public class UI extends JFrame {
 
 		// Food Label - StatusText
 		final JLabel label_food_statusText = new JLabel();
-		label_food_statusText.setBounds(620, 12, 200, 20);
+		label_food_statusText.setBounds(210, 35, 200, 20);
 		this.add(label_food_statusText);
 
 		// Food - Label - food
@@ -114,12 +120,12 @@ public class UI extends JFrame {
 				label_global_infoText.setText(InputChecker.checkInputValues(textfield_food_date.getText(),
 						textfield_food_price.getText(), food_section));
 				if (!InputChecker.isNoErrors()) {
-					label_food_statusText.setText("input check failed");
+					label_food_statusText.setText(globalLabel_centerText_start + "input check failed" + globalLabel_centerText_end);
 				} else {
 					food_date = textfield_food_date.getText();
 					food_price = checkTextFieldPriceInput(textfield_food_price.getText());
 					food_description = textfield_food_descriptionText.getText();
-					label_food_statusText.setText("input check passed");
+					label_food_statusText.setText(globalLabel_centerText_start + "input check passed" + globalLabel_centerText_end);
 					button_food_send.setEnabled(true);
 				}
 			}
@@ -134,7 +140,7 @@ public class UI extends JFrame {
 				dataProvider.write_toDatabase(food_tablename, food_date, food_price, food_description);
 
 				button_food_send.setEnabled(false);
-				label_food_statusText.setText("sent to database");
+				label_food_statusText.setText(globalLabel_centerText_start + "sent to database" + globalLabel_centerText_end);
 				label_global_infoText.setText("");
 			}
 		});
@@ -194,7 +200,7 @@ public class UI extends JFrame {
 				label_global_infoText.setText(InputChecker.checkInputValues(textfield_clothes_date.getText(),
 						textfield_clothes_price.getText(), clothes_section));
 				if (!InputChecker.isNoErrors()) {
-					label_clothes_statusText.setText("input check failed");
+					label_clothes_statusText.setText(globalLabel_centerText_start + "input check failed" + globalLabel_centerText_end);
 				} else {
 					clothes_date = textfield_clothes_date.getText();
 					clothes_price = checkTextFieldPriceInput(textfield_clothes_price.getText());
@@ -272,7 +278,7 @@ public class UI extends JFrame {
 				label_global_infoText.setText(InputChecker.checkInputValues(textfield_cosmetics_date.getText(),
 						textfield_cosmetics_price.getText(), cosmetics_section));
 				if (!InputChecker.isNoErrors()) {
-					label_cosmetics_statusText.setText("input check failed");
+					label_cosmetics_statusText.setText(globalLabel_centerText_start + "input check failed" + globalLabel_centerText_end);
 				} else {
 					cosmetics_date = textfield_cosmetics_date.getText();
 					cosmetics_price = checkTextFieldPriceInput(textfield_cosmetics_price.getText());
@@ -351,7 +357,7 @@ public class UI extends JFrame {
 				label_global_infoText.setText(InputChecker.checkInputValues(textfield_other_date.getText(),
 						textfield_other_price.getText(), other_section));
 				if (!InputChecker.isNoErrors()) {
-					label_other_statusText.setText("input check failed");
+					label_other_statusText.setText(globalLabel_centerText_start + "input check failed" + globalLabel_centerText_end);
 				} else {
 					other_date = textfield_other_date.getText();
 					other_price = checkTextFieldPriceInput(textfield_other_price.getText());

@@ -17,14 +17,14 @@ public class InputChecker {
 		noErrors = false;
 
 		// Date input checks
-		inputInfo += checkDate_validCharacters(date);		
+		inputInfo += checkDate_validCharacters(date);
 		inputInfo += checkDate_Month(date);
 		inputInfo += checkDate_monthLength(date);
 		inputInfo += checkDate_Day(date);
 		inputInfo += checkDate_dayLength(date);
 		inputInfo += checkDate_Year(date);
 		inputInfo += checkDate_YearLengthTooLong(date);
-		
+
 		// Price input checks
 		inputInfo += checkPrice_empty(price);
 		inputInfo += checkPrice_priceContainsOnlyZeros(price);
@@ -33,7 +33,7 @@ public class InputChecker {
 
 		System.out.println(inputInfo + inputInfoEnd);
 
-		if ((inputInfo + inputInfoEnd).contentEquals("<html>" + inputInfoEnd)) {
+		if ((inputInfo + inputInfoEnd).contentEquals("<html>" + section + inputInfoEnd)) {
 			noErrors = true;
 		}
 		return inputInfo + inputInfoEnd;
@@ -43,11 +43,10 @@ public class InputChecker {
 		return noErrors;
 	}
 
-	
 	/*
 	 * Date input checks
 	 */
-	
+
 	private static String checkDate_validCharacters(String date) {
 		String info = "";
 
@@ -143,6 +142,7 @@ public class InputChecker {
 				info += "Date: provided year is in future.<br/>";
 			}
 
+			// determines the year accepted in the past
 			if (Integer.parseInt(matcher.group(3)) < curr_Year - 2) {
 				info += "Date: provided year is too far in past.<br/>";
 			}
@@ -163,74 +163,69 @@ public class InputChecker {
 		}
 		return info;
 	}
-	
-	
 
 	/*
 	 * Price input checks
 	 */
-	
+
 	private static String checkPrice_empty(String price) {
 		String info = "";
-		String regEx = "[0-9]*\\.[0-9]{2}";
-		
+		String regEx = "[0-9]+(\\.[0-9]{2})?";
+
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(price);
-		
-		if(!matcher.find()) {
+
+		if (!matcher.find()) {
 			info += "Price: price section is empty.<br/>";
 		}
 		return info;
 	}
-	
+
 	private static String checkPrice_priceContainsOnlyZeros(String price) {
 		String info = "";
 		String regEx = "([0]*)\\.([0]{2})";
-		
+
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(price);
-		
-		if(matcher.find()) {
-			if(matcher.group(1).matches("[0]*") && matcher.group(2).matches("[0]{2}")) {
-				info += "Price: price contains only zeros.<br/>";
-			}
+
+		if (Float.parseFloat(price) == 0) {
+			info += "Price: price contains only zeros.<br/>";
 		}
 		return info;
 	}
-	
+
 	private static String checkPrice_invalidCharacters(String price) {
 		String info = "";
 		String regEx = "[^0-9.]";
-		
+
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(price);
-		
-		if(price.startsWith("-")) {
+
+		if (price.startsWith("-")) {
 			info += "Price: negativ values not permitted.<br/>";
 		}
-		
-		if(price.endsWith(".")) {
+
+		if (price.endsWith(".")) {
 			info += "Price: cent section not provided.<br/>";
 		}
-		
-		if(matcher.find()) {
+
+		if (matcher.find()) {
 			info += "Price: caracters not permitted.<br/>";
 		}
 		return info;
 	}
-	
-	
+
 	private static String checkPrice_centSectionLength(String price) {
 		String info = "";
 		String regEx = "(\\.[0-9]{3,})";
-		
+
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(price);
-		
-		if(matcher.find()) {
+
+		if (matcher.find()) {
 			info += "Price: cent section to long.<br/>";
 		}
 		return info;
 	}
-	
+
 }
