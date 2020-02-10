@@ -12,9 +12,10 @@ import javax.swing.JTextField;
 
 import Database.DBConnection;
 import Handler.DataProvider;
+import Handler.InputChecker;
 
 public class UI extends JFrame {
-	
+
 	DataProvider dataProvider = new DataProvider();
 	DBConnection dbc;
 
@@ -54,9 +55,13 @@ public class UI extends JFrame {
 		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+		// Global - Label - Error infoText
+		JLabel label_global_infoText = new JLabel("");
+		label_global_infoText.setBounds(10, 250, 500, 200);
+		this.add(label_global_infoText);
+
 		/**
-		 * ######################################################### 
-		 * Food section
+		 * ######################################################### Food section
 		 * #########################################################
 		 */
 
@@ -105,40 +110,38 @@ public class UI extends JFrame {
 		button_food_send.setEnabled(false);
 		button_food_check.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				boolean passed = false;
-
-				if (textfieldPrice_checkForWrongCharacters(textfield_food_price.getText())) {
+				String food_section = "[Food]<br/>";
+				label_global_infoText.setText(InputChecker.checkInputValues(textfield_food_date.getText(),
+						textfield_food_price.getText(), food_section));
+				if (!InputChecker.isNoErrors()) {
+					label_food_statusText.setText("input check failed");
+				} else {
 					food_date = textfield_food_date.getText();
 					food_price = checkTextFieldPriceInput(textfield_food_price.getText());
 					food_description = textfield_food_descriptionText.getText();
 					label_food_statusText.setText("input check passed");
-					passed = true;
 					button_food_send.setEnabled(true);
-					
-				} else {
-					label_food_statusText.setText("input check failed");
 				}
 			}
-
 		});
 		this.add(button_food_check);
 
 		// Food Button action - send
 		button_food_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				// Send data to database
 				dataProvider.write_toDatabase(food_tablename, food_date, food_price, food_description);
-				
+
 				button_food_send.setEnabled(false);
 				label_food_statusText.setText("sent to database");
+				label_global_infoText.setText("");
 			}
 		});
 		this.add(button_food_send);
 
 		/**
-		 * ######################################################### 
-		 * Clothes section
+		 * ######################################################### Clothes section
 		 * #########################################################
 		 */
 
@@ -187,17 +190,17 @@ public class UI extends JFrame {
 		button_clothes_send.setEnabled(false);
 		button_clothes_check.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				boolean passed = false;
-
-				if (textfieldPrice_checkForWrongCharacters(textfield_clothes_price.getText())) {
+				String clothes_section = "[Clothes]<br/>";
+				label_global_infoText.setText(InputChecker.checkInputValues(textfield_clothes_date.getText(),
+						textfield_clothes_price.getText(), clothes_section));
+				if (!InputChecker.isNoErrors()) {
+					label_clothes_statusText.setText("input check failed");
+				} else {
 					clothes_date = textfield_clothes_date.getText();
 					clothes_price = checkTextFieldPriceInput(textfield_clothes_price.getText());
 					clothes_description = textfield_clothes_descriptionText.getText();
 					label_clothes_statusText.setText("input check passed");
-					passed = true;
 					button_clothes_send.setEnabled(true);
-				} else {
-					label_clothes_statusText.setText("input check failed");
 				}
 			}
 		});
@@ -208,7 +211,7 @@ public class UI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
 				dataProvider.write_toDatabase(clothes_tablename, clothes_date, clothes_price, clothes_description);
-				
+
 				button_clothes_send.setEnabled(false);
 				label_clothes_statusText.setText("sent to database");
 			}
@@ -216,8 +219,7 @@ public class UI extends JFrame {
 		this.add(button_clothes_send);
 
 		/**
-		 * ######################################################### 
-		 * Cosmetics section
+		 * ######################################################### Cosmetics section
 		 * #########################################################
 		 */
 
@@ -266,17 +268,17 @@ public class UI extends JFrame {
 		button_cosmetics_send.setEnabled(false);
 		button_cosmetics_check.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				boolean passed = false;
-
-				if (textfieldPrice_checkForWrongCharacters(textfield_cosmetics_price.getText())) {
+				String cosmetics_section = "[Cosmetics]<br/>";
+				label_global_infoText.setText(InputChecker.checkInputValues(textfield_cosmetics_date.getText(),
+						textfield_cosmetics_price.getText(), cosmetics_section));
+				if (!InputChecker.isNoErrors()) {
+					label_cosmetics_statusText.setText("input check failed");
+				} else {
 					cosmetics_date = textfield_cosmetics_date.getText();
 					cosmetics_price = checkTextFieldPriceInput(textfield_cosmetics_price.getText());
 					cosmetics_description = textfield_cosmetics_descriptionText.getText();
 					label_cosmetics_statusText.setText("input check passed");
-					passed = true;
 					button_cosmetics_send.setEnabled(true);
-				} else {
-					label_cosmetics_statusText.setText("input check failed");
 				}
 			}
 		});
@@ -286,8 +288,9 @@ public class UI extends JFrame {
 		button_cosmetics_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
-				dataProvider.write_toDatabase(cosmetics_tablename, cosmetics_date, cosmetics_price, cosmetics_description);
-				
+				dataProvider.write_toDatabase(cosmetics_tablename, cosmetics_date, cosmetics_price,
+						cosmetics_description);
+
 				button_cosmetics_send.setEnabled(false);
 				label_cosmetics_statusText.setText("sent to database");
 			}
@@ -295,8 +298,7 @@ public class UI extends JFrame {
 		this.add(button_cosmetics_send);
 
 		/**
-		 * ######################################################### 
-		 * Other section
+		 * ######################################################### Other section
 		 * #########################################################
 		 */
 
@@ -345,17 +347,17 @@ public class UI extends JFrame {
 		button_other_send.setEnabled(false);
 		button_other_check.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				boolean passed = false;
-
-				if (textfieldPrice_checkForWrongCharacters(textfield_other_price.getText())) {
+				String other_section = "[Other]<br/>";
+				label_global_infoText.setText(InputChecker.checkInputValues(textfield_other_date.getText(),
+						textfield_other_price.getText(), other_section));
+				if (!InputChecker.isNoErrors()) {
+					label_other_statusText.setText("input check failed");
+				} else {
 					other_date = textfield_other_date.getText();
 					other_price = checkTextFieldPriceInput(textfield_other_price.getText());
 					other_description = textfield_other_descriptionText.getText();
 					label_other_statusText.setText("input check passed");
-					passed = true;
 					button_other_send.setEnabled(true);
-				} else {
-					label_other_statusText.setText("input check failed");
 				}
 			}
 		});
@@ -366,7 +368,7 @@ public class UI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// Send data to database
 				dataProvider.write_toDatabase(other_tablename, other_date, other_price, other_description);
-				
+
 				button_other_send.setEnabled(false);
 				label_other_statusText.setText("sent to database");
 			}
@@ -391,26 +393,4 @@ public class UI extends JFrame {
 		}
 		return Float.parseFloat(content);
 	}
-
-	/**
-	 * Error check
-	 * 
-	 * checks if input contains any characters only numbers are allowed
-	 * 
-	 * @param content
-	 * @return true if passed
-	 */
-	private boolean textfieldPrice_checkForWrongCharacters(String content) {
-		String regEx = "[a-zA-Z]";
-		Pattern pattern = Pattern.compile(regEx);
-		Matcher matcher = pattern.matcher(content);
-
-		if (matcher.find()) {
-			return false;
-		}
-		return true;
-	}
-	
-	
-
 }

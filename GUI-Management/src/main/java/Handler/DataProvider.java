@@ -17,6 +17,7 @@ public class DataProvider {
 
 	private DBConnection dbc;
 	private Overview view;
+	private InputChecker inputChecker;
 
 	private String sumOfExpansesOrderedByPayDate = "expanses summed up and ordered by month:" + System.lineSeparator();
 	private String allExistingPayDates = "";
