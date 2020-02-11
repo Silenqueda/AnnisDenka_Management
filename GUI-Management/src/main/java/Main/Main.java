@@ -11,9 +11,8 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		
-		//UI ui = new UI();
+		UI ui = new UI();
 		
-		QueryViewer q = new QueryViewer();
 		
 	}
 

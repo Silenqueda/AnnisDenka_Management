@@ -101,13 +101,15 @@ public class UI extends JFrame {
 		textfield_food_descriptionText.setBounds(300, 13, 200, 20);
 		this.add(textfield_food_descriptionText);
 
-		// Food - Button - Send & Check
+		// Food - Button - Send, Check, queries
 		JButton button_food_check = new JButton("check");
 		final JButton button_food_send = new JButton("send");
+		JButton button_food_queries = new JButton("queries");
 
 		// Food - Button - Bounds
 		button_food_check.setBounds(510, 12, 100, 20);
 		button_food_send.setBounds(510, 35, 100, 20);
+		button_food_queries.setBounds(620, 12, 100, 20);
 
 		// Food Button action - check
 		button_food_send.setEnabled(false);
@@ -142,6 +144,16 @@ public class UI extends JFrame {
 			}
 		});
 		this.add(button_food_send);
+		
+		button_food_queries.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				QueryViewer queryViewer = new QueryViewer(dataProvider);
+				
+			}
+		});
+		this.add(button_food_queries);
 
 		/**
 		 * ######################################################### Clothes section
@@ -184,6 +196,8 @@ public class UI extends JFrame {
 		// clothes - Button - Send & Check
 		JButton button_clothes_check = new JButton("check");
 		final JButton button_clothes_send = new JButton("send");
+		JButton button_clothes_queries = new JButton("queries");
+
 
 		// clothes - Button - Bounds
 		button_clothes_check.setBounds(510, 72, 100, 20);
@@ -262,6 +276,7 @@ public class UI extends JFrame {
 		// cosmetics - Button - Send & Check
 		JButton button_cosmetics_check = new JButton("check");
 		final JButton button_cosmetics_send = new JButton("send");
+		JButton button_cosmetics_queries = new JButton("queries");
 
 		// cosmetics - Button - Bounds
 		button_cosmetics_check.setBounds(510, 132, 100, 20);
@@ -341,6 +356,8 @@ public class UI extends JFrame {
 		// other - Button - Send & Check
 		JButton button_other_check = new JButton("check");
 		final JButton button_other_send = new JButton("send");
+		JButton button_other_queries = new JButton("queries");
+
 
 		// other - Button - Bounds
 		button_other_check.setBounds(510, 192, 100, 20);

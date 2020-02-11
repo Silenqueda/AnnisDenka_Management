@@ -49,7 +49,7 @@ public class DataProvider {
 	 * 
 	 * @return
 	 */
-	private String read_sumOfExpansesOrderedByPayDate() {
+	public String read_sumOfExpansesOrderedByPayDate() {
 		String query = "select substring(pay_date,4) as month_Year, sum(price) as sum  from expanse_carsharing group by month_Year;";
 		String result = "";
 
@@ -169,8 +169,8 @@ public class DataProvider {
 
 		try {
 			return query_start + table_name + "(" + rsmd.getColumnName(2) + comma + rsmd.getColumnName(3) + comma
-					+ rsmd.getColumnName(4) + ")" + values + high + value_date + high + comma + high + value_price
-					+ high + comma + high + value_descriptionText + high + query_end;
+					+ rsmd.getColumnName(4) + ")" + values + high + value_date + high + comma + value_price
+					+ comma + high + value_descriptionText + high + query_end;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -178,7 +178,7 @@ public class DataProvider {
 	}
 
 	/**
-	 * helper mehtod
+	 * helper method
 	 * 
 	 * gets all column names from given table
 	 * @param table_name
