@@ -59,7 +59,7 @@ public class UI extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		// Global - Label - Error infoText
-		JLabel label_global_infoText = new JLabel("");
+		final JLabel label_global_infoText = new JLabel("");
 		label_global_infoText.setBounds(10, 250, 500, 200);
 		this.add(label_global_infoText);
 
@@ -147,7 +147,6 @@ public class UI extends JFrame {
 		
 		button_food_queries.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				QueryViewer queryViewer = new QueryViewer(dataProvider);
 				

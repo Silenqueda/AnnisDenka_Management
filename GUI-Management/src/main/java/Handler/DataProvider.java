@@ -24,7 +24,7 @@ public class DataProvider {
 	public DataProvider() {
 		dbc = new DBConnection();
 		view = new Overview();
-		//gatherInformation();
+		// gatherInformation();
 	}
 
 	/**
@@ -50,8 +50,8 @@ public class DataProvider {
 	 * @return
 	 */
 	public String read_sumOfExpansesOrderedByPayDate() {
-		String query = "select substring(pay_date,4) as month_Year, sum(price) as sum  from expanse_carsharing group by month_Year;";
-		String result = "";
+		String query = "select substring(pay_date,4) as month_Year, sum(price) as sum  from expanse_carsharing group by month_Year order by month_Year asc;";
+		String result = "<html>";
 
 		dbc.connectToDB();
 
@@ -61,7 +61,7 @@ public class DataProvider {
 			statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
-				result += resultSet.getString("month_Year") + " " + resultSet.getString("sum") + System.lineSeparator();
+				result += resultSet.getString("month_Year") + " --- " + resultSet.getString("sum") + " €"+ "<br/>";
 			}
 		} catch (SQLException e) {
 			System.out.println("Failed to connect");
@@ -77,9 +77,9 @@ public class DataProvider {
 	 * 
 	 * @return
 	 */
-	private String read_existingPayDate() {
-		String result = "";
-		String query = "select distinct (to_date(substring(pay_date,4), 'MM-YYYY')) as mmYYYY from expanse_carsharing order by mmYYYY desc;";
+	public String read_existingPayDate() {
+		String result = "<html>";
+		String query = "select distinct (to_date(substring(date,4), 'MM-YYYY')) as mmYYYY from expanse_food order by mmYYYY desc;";
 
 		dbc.connectToDB();
 
@@ -89,7 +89,7 @@ public class DataProvider {
 			statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
-				result += resultSet.getString("mmYYYY") + System.lineSeparator();
+				result += resultSet.getString("mmYYYY") + "</html>";
 			}
 		} catch (SQLException e) {
 			System.out.println("Failed to connect");
@@ -124,9 +124,10 @@ public class DataProvider {
 
 	/**
 	 * inserts dataset to given table
-	 * @param table_name table to write to
-	 * @param value_date date
-	 * @param value_price price
+	 * 
+	 * @param table_name            table to write to
+	 * @param value_date            date
+	 * @param value_price           price
 	 * @param value_descriptionText text
 	 */
 	public void write_toDatabase(String table_name, String value_date, float value_price,
@@ -169,8 +170,8 @@ public class DataProvider {
 
 		try {
 			return query_start + table_name + "(" + rsmd.getColumnName(2) + comma + rsmd.getColumnName(3) + comma
-					+ rsmd.getColumnName(4) + ")" + values + high + value_date + high + comma + value_price
-					+ comma + high + value_descriptionText + high + query_end;
+					+ rsmd.getColumnName(4) + ")" + values + high + value_date + high + comma + value_price + comma
+					+ high + value_descriptionText + high + query_end;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -181,6 +182,7 @@ public class DataProvider {
 	 * helper method
 	 * 
 	 * gets all column names from given table
+	 * 
 	 * @param table_name
 	 * @return
 	 */
